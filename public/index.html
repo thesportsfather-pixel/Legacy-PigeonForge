@@ -22,16 +22,14 @@
   <style>
     :root {
       --blue: #00aeef;
-      --blue-light: #53d3ff;
+      --blue-light: #55d5ff;
       --pink: #ec008c;
       --pink-light: #ff4db2;
-      --black: #050608;
-      --black-2: #0a0b0e;
-      --charcoal: #111318;
-      --charcoal-2: #181b21;
       --white: #ffffff;
       --muted: #aeb2bb;
-      --line: rgba(255, 255, 255, 0.11);
+      --black: #050608;
+      --dark: #0a0c10;
+      --line: rgba(255,255,255,.11);
     }
 
     * {
@@ -48,7 +46,6 @@
       overflow-x: hidden;
 
       font-family:
-        Inter,
         Arial,
         Helvetica,
         sans-serif;
@@ -58,19 +55,19 @@
       background:
         radial-gradient(
           circle at 12% 5%,
-          rgba(0, 174, 239, 0.18),
+          rgba(0,174,239,.20),
           transparent 28%
         ),
         radial-gradient(
-          circle at 86% 4%,
-          rgba(236, 0, 140, 0.17),
+          circle at 88% 8%,
+          rgba(236,0,140,.18),
           transparent 28%
         ),
         linear-gradient(
           180deg,
-          #08090b 0%,
-          #0c0e12 42%,
-          #060709 100%
+          #050608 0%,
+          #0a0d11 38%,
+          #06070a 100%
         );
     }
 
@@ -78,49 +75,24 @@
       content: "";
       position: fixed;
       inset: 0;
-      z-index: -4;
+      z-index: -10;
       pointer-events: none;
 
       background:
         repeating-radial-gradient(
           ellipse at center,
           transparent 0,
-          transparent 24px,
-          rgba(255, 255, 255, 0.012) 25px,
-          rgba(255, 255, 255, 0.012) 26px
+          transparent 26px,
+          rgba(255,255,255,.012) 27px,
+          rgba(255,255,255,.012) 28px
         );
 
-      opacity: 0.65;
-    }
-
-    body::after {
-      content: "";
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      height: 42vh;
-      z-index: -3;
-      pointer-events: none;
-
-      background:
-        linear-gradient(
-          165deg,
-          transparent 0 26%,
-          rgba(0, 174, 239, 0.05) 27% 28%,
-          transparent 29% 100%
-        ),
-        linear-gradient(
-          195deg,
-          transparent 0 35%,
-          rgba(236, 0, 140, 0.045) 36% 37%,
-          transparent 38% 100%
-        );
+      opacity: .65;
     }
 
     img {
-      max-width: 100%;
       display: block;
+      max-width: 100%;
     }
 
     a {
@@ -131,14 +103,19 @@
     input,
     a {
       -webkit-tap-highlight-color: transparent;
+      font: inherit;
     }
 
-    .site-shell {
+    button {
+      cursor: pointer;
+    }
+
+    .shell {
       width: min(1180px, calc(100% - 28px));
       margin: 0 auto;
     }
 
-    .neon-strip {
+    .top-strip {
       height: 5px;
 
       background:
@@ -150,30 +127,34 @@
         );
 
       box-shadow:
-        0 0 18px rgba(0, 174, 239, 0.75),
-        0 0 30px rgba(236, 0, 140, 0.4);
+        0 0 18px rgba(0,174,239,.7),
+        0 0 30px rgba(236,0,140,.4);
     }
 
-    .nav {
-      padding: 22px 0 10px;
+    /* HEADER */
+
+    .header {
+      padding: 20px 0 8px;
     }
 
-    .nav-inner {
+    .header-inner {
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
     .legacy-logo {
-      width: min(700px, 92%);
+      width: min(680px, 93%);
       filter:
         drop-shadow(
-          0 0 20px rgba(0, 174, 239, 0.16)
+          0 0 22px rgba(0,174,239,.16)
         );
     }
 
+    /* HERO */
+
     .hero {
-      padding: 18px 0 46px;
+      padding: 14px 0 40px;
     }
 
     .hero-panel {
@@ -181,79 +162,173 @@
       isolation: isolate;
       overflow: hidden;
 
-      border:
-        1px solid rgba(255, 255, 255, 0.12);
+      min-height: 590px;
 
       border-radius: 34px;
+
+      border:
+        1px solid rgba(255,255,255,.12);
 
       background:
         linear-gradient(
           145deg,
-          rgba(255, 255, 255, 0.06),
-          rgba(255, 255, 255, 0.018)
+          rgba(255,255,255,.055),
+          rgba(255,255,255,.015)
         );
 
       box-shadow:
-        0 35px 100px rgba(0, 0, 0, 0.62),
-        inset 0 1px 0 rgba(255, 255, 255, 0.055);
+        0 35px 100px rgba(0,0,0,.65);
     }
 
     .hero-panel::before {
       content: "";
       position: absolute;
       inset: 0;
-      z-index: -3;
+      z-index: -6;
 
       background:
         radial-gradient(
-          circle at 14% 20%,
-          rgba(0, 174, 239, 0.2),
+          circle at 14% 18%,
+          rgba(0,174,239,.21),
+          transparent 32%
+        ),
+        radial-gradient(
+          circle at 83% 18%,
+          rgba(236,0,140,.16),
           transparent 30%
         ),
-        radial-gradient(
-          circle at 80% 20%,
-          rgba(236, 0, 140, 0.15),
-          transparent 28%
-        ),
-        radial-gradient(
-          circle at 55% 95%,
-          rgba(0, 174, 239, 0.07),
-          transparent 35%
+        linear-gradient(
+          180deg,
+          transparent 0%,
+          rgba(5,6,8,.10) 45%,
+          rgba(5,6,8,.92) 100%
         );
     }
 
-    .hero-panel::after {
-      content: "";
+    /* MOUNTAINS */
+
+    .mountains-back {
       position: absolute;
-      inset: 0;
-      z-index: -2;
-      pointer-events: none;
+      z-index: -5;
+
+      left: -10%;
+      right: -10%;
+      bottom: 0;
+
+      height: 58%;
+
+      opacity: .65;
 
       background:
         linear-gradient(
-          165deg,
-          transparent 0 64%,
-          rgba(0, 174, 239, 0.055) 65% 65.5%,
-          transparent 66% 100%
+          145deg,
+          transparent 0 18%,
+          rgba(34,40,48,.70) 18.4% 34%,
+          transparent 34.5%
         ),
         linear-gradient(
-          195deg,
-          transparent 0 66%,
-          rgba(236, 0, 140, 0.05) 67% 67.5%,
-          transparent 68% 100%
+          220deg,
+          transparent 0 23%,
+          rgba(28,34,42,.74) 23.5% 40%,
+          transparent 40.5%
+        ),
+        linear-gradient(
+          150deg,
+          transparent 0 37%,
+          rgba(24,30,37,.78) 37.5% 55%,
+          transparent 55.5%
         );
+    }
+
+    .mountains-mid {
+      position: absolute;
+      z-index: -4;
+
+      left: -15%;
+      right: -15%;
+      bottom: -3%;
+
+      height: 48%;
+
+      opacity: .88;
+
+      background:
+        linear-gradient(
+          145deg,
+          transparent 0 18%,
+          rgba(18,23,29,.98) 18.5% 37%,
+          transparent 37.5%
+        ),
+        linear-gradient(
+          216deg,
+          transparent 0 26%,
+          rgba(16,20,26,.98) 26.5% 48%,
+          transparent 48.5%
+        ),
+        linear-gradient(
+          145deg,
+          transparent 0 48%,
+          rgba(12,16,21,.98) 48.5% 66%,
+          transparent 66.5%
+        );
+    }
+
+    .mountain-glow-blue {
+      position: absolute;
+      z-index: -3;
+
+      left: -50px;
+      bottom: 70px;
+
+      width: 430px;
+      height: 170px;
+
+      background:
+        radial-gradient(
+          ellipse,
+          rgba(0,174,239,.20),
+          transparent 70%
+        );
+
+      filter: blur(20px);
+    }
+
+    .mountain-glow-pink {
+      position: absolute;
+      z-index: -3;
+
+      right: -50px;
+      bottom: 50px;
+
+      width: 430px;
+      height: 170px;
+
+      background:
+        radial-gradient(
+          ellipse,
+          rgba(236,0,140,.18),
+          transparent 70%
+        );
+
+      filter: blur(20px);
     }
 
     .hero-grid {
+      position: relative;
+      z-index: 2;
+
       display: grid;
       grid-template-columns:
-        minmax(0, 1.15fr)
-        minmax(300px, 0.75fr);
+        minmax(0, 1.12fr)
+        minmax(300px, .68fr);
 
-      gap: 32px;
+      gap: 30px;
       align-items: center;
 
-      padding: 56px;
+      padding:
+        55px
+        55px
+        125px;
     }
 
     .kicker {
@@ -261,48 +336,47 @@
       align-items: center;
       gap: 10px;
 
-      margin-bottom: 16px;
+      margin-bottom: 15px;
 
       color: var(--blue-light);
 
-      font-size: 12px;
-      font-weight: 900;
-      letter-spacing: 3.2px;
+      font-size: 11px;
+      font-weight: 950;
+      letter-spacing: 3px;
       text-transform: uppercase;
     }
 
     .kicker::before {
       content: "";
-      width: 32px;
+
+      width: 31px;
       height: 3px;
 
       background: var(--pink);
 
       box-shadow:
-        0 0 15px rgba(236, 0, 140, 0.75);
+        0 0 15px rgba(236,0,140,.75);
     }
 
-    .hero-title {
+    h1 {
       margin: 0;
 
       font-size:
-        clamp(54px, 8.2vw, 108px);
+        clamp(54px, 8.5vw, 108px);
 
-      line-height: 0.83;
+      line-height: .84;
 
       letter-spacing: -5px;
-
       text-transform: uppercase;
 
       font-weight: 950;
     }
 
-    .hero-title .road {
+    .road {
       display: block;
-      color: white;
     }
 
-    .hero-title .pigeon {
+    .pigeon {
       display: block;
 
       margin-top: 10px;
@@ -310,31 +384,26 @@
       background:
         linear-gradient(
           90deg,
-          var(--blue) 0%,
-          var(--blue-light) 34%,
-          var(--pink) 72%,
-          var(--pink-light) 100%
+          var(--blue),
+          var(--blue-light) 35%,
+          var(--pink) 73%,
+          var(--pink-light)
         );
 
       -webkit-background-clip: text;
       background-clip: text;
 
       color: transparent;
-
-      filter:
-        drop-shadow(
-          0 0 20px rgba(0, 174, 239, 0.12)
-        );
     }
 
     .hero-copy {
       max-width: 670px;
 
-      margin: 25px 0 0;
+      margin: 24px 0 0;
 
-      color: #c7cad0;
+      color: #c7cad1;
 
-      font-size: 18px;
+      font-size: 17px;
       line-height: 1.67;
     }
 
@@ -345,16 +414,16 @@
     .hero-buttons {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 11px;
 
-      margin-top: 28px;
+      margin-top: 27px;
     }
 
     .primary-btn,
     .secondary-btn {
       display: inline-flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
 
       min-height: 50px;
 
@@ -362,20 +431,18 @@
 
       border-radius: 12px;
 
-      font-size: 13px;
-      font-weight: 900;
-      letter-spacing: 1px;
-      text-transform: uppercase;
       text-decoration: none;
 
-      transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease,
-        border-color 0.2s ease;
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: 1px;
+      text-transform: uppercase;
     }
 
     .primary-btn {
-      color: #fff;
+      border: 0;
+
+      color: white;
 
       background:
         linear-gradient(
@@ -385,283 +452,159 @@
         );
 
       box-shadow:
-        0 12px 28px rgba(0, 174, 239, 0.18),
-        0 0 26px rgba(236, 0, 140, 0.12);
+        0 12px 28px rgba(0,174,239,.17);
     }
 
     .secondary-btn {
       border:
-        1px solid rgba(255, 255, 255, 0.14);
+        1px solid rgba(255,255,255,.14);
 
       background:
-        rgba(255, 255, 255, 0.035);
-
-      color: white;
-    }
-
-    .primary-btn:hover,
-    .secondary-btn:hover {
-      transform: translateY(-2px);
-    }
-
-    .primary-btn:hover {
-      box-shadow:
-        0 15px 32px rgba(0, 174, 239, 0.23),
-        0 0 34px rgba(236, 0, 140, 0.17);
-    }
-
-    .secondary-btn:hover {
-      border-color:
-        rgba(0, 174, 239, 0.5);
+        rgba(0,0,0,.20);
     }
 
     .hero-badge-area {
-      position: relative;
-
       display: flex;
       justify-content: center;
       align-items: center;
 
-      min-height: 420px;
+      position: relative;
+
+      min-height: 370px;
     }
 
     .hero-badge-area::before {
       content: "";
       position: absolute;
 
-      width: 370px;
-      height: 370px;
+      width: 340px;
+      height: 340px;
 
       border-radius: 50%;
 
       background:
         radial-gradient(
           circle,
-          rgba(0, 174, 239, 0.23),
-          rgba(236, 0, 140, 0.1) 40%,
+          rgba(0,174,239,.23),
+          rgba(236,0,140,.10) 43%,
           transparent 69%
         );
 
-      filter: blur(7px);
-    }
-
-    .hero-badge-area::after {
-      content: "";
-      position: absolute;
-
-      width: 270px;
-      height: 270px;
-
-      border:
-        1px solid rgba(255, 255, 255, 0.07);
-
-      border-radius: 50%;
-
-      box-shadow:
-        0 0 0 22px rgba(255, 255, 255, 0.015),
-        0 0 0 48px rgba(255, 255, 255, 0.01);
+      filter: blur(6px);
     }
 
     .ripken-logo {
       position: relative;
       z-index: 2;
 
-      width: min(350px, 88%);
+      width: min(335px, 90%);
 
       filter:
         drop-shadow(
-          0 24px 30px rgba(0, 0, 0, 0.65)
+          0 22px 30px rgba(0,0,0,.62)
         );
     }
 
-    .stat-bar {
+    .stats {
+      position: absolute;
+
+      z-index: 4;
+
+      left: 0;
+      right: 0;
+      bottom: 0;
+
       display: grid;
       grid-template-columns:
         repeat(4, 1fr);
 
       border-top:
-        1px solid rgba(255, 255, 255, 0.09);
+        1px solid rgba(255,255,255,.09);
 
       background:
-        rgba(0, 0, 0, 0.24);
+        rgba(3,4,6,.72);
+
+      backdrop-filter: blur(8px);
     }
 
     .stat {
       position: relative;
 
-      padding: 22px 18px;
+      padding: 20px 15px;
 
       text-align: center;
     }
 
     .stat:not(:last-child)::after {
       content: "";
+
       position: absolute;
 
-      top: 22%;
+      top: 25%;
       right: 0;
-      bottom: 22%;
+      bottom: 25%;
 
       width: 1px;
 
       background:
-        rgba(255, 255, 255, 0.08);
+        rgba(255,255,255,.08);
     }
 
     .stat strong {
       display: block;
 
-      margin-bottom: 4px;
+      margin-bottom: 3px;
 
-      font-size: 24px;
+      font-size: 23px;
       font-weight: 950;
     }
 
     .stat span {
-      color: #8e939d;
+      color: #8f949d;
 
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 900;
-      letter-spacing: 1.6px;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
     }
 
-    .mission {
-      padding: 18px 0 32px;
-    }
-
-    .mission-card {
-      position: relative;
-      overflow: hidden;
-
-      padding: 36px;
-
-      border-radius: 24px;
-
-      border:
-        1px solid rgba(255, 255, 255, 0.1);
-
-      background:
-        linear-gradient(
-          135deg,
-          rgba(0, 174, 239, 0.08),
-          rgba(236, 0, 140, 0.06)
-        );
-    }
-
-    .mission-card::before {
-      content: "";
-      position: absolute;
-      left: -40px;
-      bottom: -100px;
-
-      width: 300px;
-      height: 230px;
-
-      background:
-        linear-gradient(
-          145deg,
-          transparent 0 30%,
-          rgba(0, 174, 239, 0.09) 31% 55%,
-          transparent 56% 100%
-        );
-
-      transform: rotate(-7deg);
-    }
-
-    .mission-card::after {
-      content: "";
-      position: absolute;
-      right: -55px;
-      bottom: -100px;
-
-      width: 300px;
-      height: 230px;
-
-      background:
-        linear-gradient(
-          215deg,
-          transparent 0 30%,
-          rgba(236, 0, 140, 0.08) 31% 55%,
-          transparent 56% 100%
-        );
-
-      transform: rotate(8deg);
-    }
-
-    .mission-inner {
-      position: relative;
-      z-index: 2;
-
-      display: grid;
-      grid-template-columns: 0.8fr 1.2fr;
-
-      gap: 38px;
-      align-items: center;
-    }
-
-    .mission-big {
-      font-size:
-        clamp(34px, 5vw, 64px);
-
-      line-height: 0.95;
-
-      font-weight: 950;
-
-      text-transform: uppercase;
-    }
-
-    .mission-big span {
-      display: block;
-
-      color: var(--pink);
-    }
-
-    .mission-copy {
-      color: #c3c6cd;
-
-      font-size: 16px;
-      line-height: 1.65;
-    }
+    /* PLAYERS */
 
     .players-section {
-      padding: 44px 0 54px;
+      padding: 48px 0;
     }
 
-    .section-heading {
+    .section-head {
       text-align: center;
 
-      margin-bottom: 30px;
+      margin-bottom: 28px;
     }
 
     .section-label {
+      margin-bottom: 9px;
+
       color: var(--pink);
 
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 950;
-
       letter-spacing: 3px;
-
       text-transform: uppercase;
-
-      margin-bottom: 10px;
     }
 
-    .section-heading h2 {
+    .section-head h2 {
       margin: 0;
 
       font-size:
         clamp(34px, 5vw, 58px);
 
-      line-height: 0.95;
-
+      line-height: .95;
       text-transform: uppercase;
     }
 
-    .section-heading p {
-      max-width: 720px;
+    .section-head p {
+      max-width: 700px;
 
-      margin: 14px auto 0;
+      margin: 13px auto 0;
 
       color: #aeb2bb;
 
@@ -672,50 +615,45 @@
       display: grid;
 
       grid-template-columns:
-        repeat(4, minmax(0, 1fr));
+        repeat(4, 1fr);
 
       gap: 14px;
     }
 
     .player-card {
       position: relative;
-      isolation: isolate;
       overflow: hidden;
 
       display: block;
 
-      min-height: 166px;
+      min-height: 150px;
 
-      padding: 22px 20px;
+      padding: 20px;
 
-      border-radius: 19px;
+      border-radius: 18px;
 
       border:
-        1px solid rgba(255, 255, 255, 0.1);
+        1px solid rgba(255,255,255,.10);
 
       text-decoration: none;
 
       background:
         linear-gradient(
           145deg,
-          rgba(255, 255, 255, 0.055),
-          rgba(255, 255, 255, 0.018)
+          rgba(255,255,255,.055),
+          rgba(255,255,255,.015)
         );
 
-      box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.025);
-
       transition:
-        transform 0.18s ease,
-        border-color 0.18s ease,
-        box-shadow 0.18s ease;
+        transform .18s ease,
+        border-color .18s ease,
+        box-shadow .18s ease;
     }
 
     .player-card::before {
       content: "";
-      position: absolute;
-      z-index: -1;
 
+      position: absolute;
       top: 0;
       left: 0;
       right: 0;
@@ -732,85 +670,320 @@
 
     .player-card::after {
       content: "";
-      position: absolute;
-      z-index: -1;
 
-      right: -65px;
+      position: absolute;
+      right: -55px;
       bottom: -65px;
 
-      width: 150px;
-      height: 150px;
+      width: 145px;
+      height: 145px;
 
       border-radius: 50%;
 
       background:
         radial-gradient(
           circle,
-          rgba(0, 174, 239, 0.16),
-          transparent 67%
+          rgba(0,174,239,.17),
+          transparent 68%
         );
-
-      transition:
-        transform 0.2s ease;
     }
 
     .player-card:hover {
-      transform: translateY(-6px);
+      transform: translateY(-5px);
 
       border-color:
-        rgba(0, 174, 239, 0.52);
+        rgba(0,174,239,.5);
 
       box-shadow:
-        0 18px 45px rgba(0, 0, 0, 0.36),
-        0 0 22px rgba(0, 174, 239, 0.08);
-    }
-
-    .player-card:hover::after {
-      transform: scale(1.45);
+        0 18px 40px rgba(0,0,0,.35);
     }
 
     .player-number {
       color: var(--pink);
 
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 950;
-
       letter-spacing: 2px;
     }
 
     .player-name {
-      max-width: 90%;
+      position: relative;
+      z-index: 2;
 
       margin-top: 8px;
 
-      font-size: 21px;
+      font-size: 20px;
       font-weight: 950;
 
-      line-height: 1.13;
+      line-height: 1.12;
     }
 
-    .support-link {
+    .player-action {
       position: absolute;
+      z-index: 3;
 
       left: 20px;
-      bottom: 18px;
+      bottom: 17px;
 
       color: var(--blue-light);
 
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 950;
 
-      letter-spacing: 1.4px;
-
+      letter-spacing: 1.3px;
       text-transform: uppercase;
     }
 
-    .support-link span {
+    .player-action span {
       color: var(--pink);
     }
 
+    /* GENERAL DONATION */
+
+    .general-section {
+      padding: 8px 0 54px;
+    }
+
+    .general-panel {
+      position: relative;
+      overflow: hidden;
+
+      display: grid;
+
+      grid-template-columns:
+        .95fr 1.05fr;
+
+      gap: 34px;
+      align-items: center;
+
+      padding: 38px;
+
+      border-radius: 26px;
+
+      border:
+        1px solid rgba(255,255,255,.11);
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(0,174,239,.11),
+          rgba(236,0,140,.10)
+        );
+
+      box-shadow:
+        0 24px 65px rgba(0,0,0,.36);
+    }
+
+    .general-panel::before {
+      content: "";
+
+      position: absolute;
+      left: -80px;
+      bottom: -120px;
+
+      width: 430px;
+      height: 240px;
+
+      opacity: .40;
+
+      background:
+        linear-gradient(
+          145deg,
+          transparent 0 28%,
+          rgba(0,174,239,.22) 28.5% 52%,
+          transparent 52.5%
+        );
+    }
+
+    .general-copy,
+    .general-form {
+      position: relative;
+      z-index: 2;
+    }
+
+    .general-copy h2 {
+      margin: 6px 0 0;
+
+      font-size:
+        clamp(32px, 4.5vw, 54px);
+
+      line-height: .96;
+      text-transform: uppercase;
+    }
+
+    .general-copy p {
+      margin: 14px 0 0;
+
+      color: #c1c5cc;
+
+      line-height: 1.6;
+    }
+
+    .general-form {
+      padding: 23px;
+
+      border-radius: 18px;
+
+      border:
+        1px solid rgba(255,255,255,.10);
+
+      background:
+        rgba(3,4,6,.55);
+
+      backdrop-filter: blur(10px);
+    }
+
+    .field {
+      margin-bottom: 13px;
+    }
+
+    .field label {
+      display: block;
+
+      margin-bottom: 6px;
+
+      color: #c8cbd1;
+
+      font-size: 10px;
+      font-weight: 900;
+
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+
+    .field input {
+      width: 100%;
+
+      min-height: 47px;
+
+      padding: 0 13px;
+
+      color: white;
+
+      border:
+        1px solid rgba(255,255,255,.12);
+
+      border-radius: 10px;
+
+      outline: none;
+
+      background:
+        rgba(0,0,0,.30);
+    }
+
+    .field input:focus {
+      border-color:
+        rgba(0,174,239,.65);
+    }
+
+    .amount-wrap {
+      position: relative;
+    }
+
+    .dollar {
+      position: absolute;
+
+      left: 14px;
+      top: 50%;
+
+      transform: translateY(-50%);
+
+      color: var(--blue-light);
+
+      font-weight: 950;
+    }
+
+    .amount-wrap input {
+      padding-left: 30px;
+    }
+
+    .anon {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      margin:
+        2px 0
+        16px;
+
+      color: #b6bac2;
+
+      font-size: 12px;
+    }
+
+    .anon input {
+      width: 17px;
+      height: 17px;
+    }
+
+    .donate-btn {
+      width: 100%;
+      min-height: 51px;
+
+      border: 0;
+      border-radius: 11px;
+
+      color: white;
+
+      background:
+        linear-gradient(
+          115deg,
+          var(--blue),
+          var(--pink)
+        );
+
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .donate-btn:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    .general-message {
+      display: none;
+
+      margin-top: 12px;
+
+      padding: 11px;
+
+      border-radius: 9px;
+
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .general-message.error {
+      display: block;
+
+      color: #ffdce2;
+
+      background:
+        rgba(255,80,100,.09);
+
+      border:
+        1px solid rgba(255,80,100,.25);
+    }
+
+    .general-message.success {
+      display: block;
+
+      color: #e1fff0;
+
+      background:
+        rgba(70,220,140,.08);
+
+      border:
+        1px solid rgba(70,220,140,.25);
+    }
+
+    /* HOW IT WORKS */
+
     .how-section {
-      padding: 10px 0 54px;
+      padding: 8px 0 54px;
     }
 
     .how-grid {
@@ -819,55 +992,32 @@
       grid-template-columns:
         repeat(3, 1fr);
 
-      gap: 15px;
+      gap: 14px;
     }
 
     .how-card {
-      position: relative;
-      overflow: hidden;
+      min-height: 195px;
 
-      min-height: 210px;
+      padding: 25px;
 
-      padding: 28px;
-
-      border-radius: 21px;
+      border-radius: 20px;
 
       border:
-        1px solid rgba(255, 255, 255, 0.1);
+        1px solid rgba(255,255,255,.1);
 
       background:
-        rgba(255, 255, 255, 0.026);
-    }
-
-    .how-card::after {
-      content: "";
-      position: absolute;
-
-      right: -65px;
-      top: -65px;
-
-      width: 170px;
-      height: 170px;
-
-      border-radius: 50%;
-
-      background:
-        radial-gradient(
-          circle,
-          rgba(236, 0, 140, 0.12),
-          transparent 68%
-        );
+        rgba(255,255,255,.025);
     }
 
     .how-number {
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
 
-      width: 44px;
-      height: 44px;
+      width: 42px;
+      height: 42px;
 
-      margin-bottom: 20px;
+      margin-bottom: 17px;
 
       border-radius: 50%;
 
@@ -879,15 +1029,12 @@
         );
 
       font-weight: 950;
-
-      box-shadow:
-        0 0 22px rgba(0, 174, 239, 0.15);
     }
 
     .how-card h3 {
-      margin: 0 0 10px;
+      margin: 0 0 8px;
 
-      font-size: 20px;
+      font-size: 19px;
     }
 
     .how-card p {
@@ -895,178 +1042,47 @@
 
       color: #aeb2bb;
 
-      font-size: 14px;
+      font-size: 13px;
       line-height: 1.6;
     }
 
-    .final-cta {
-      padding: 8px 0 56px;
-    }
-
-    .final-panel {
-      position: relative;
-      isolation: isolate;
-      overflow: hidden;
-
-      padding: 50px 30px;
-
-      text-align: center;
-
-      border-radius: 28px;
-
-      border:
-        1px solid rgba(255, 255, 255, 0.11);
-
-      background:
-        linear-gradient(
-          130deg,
-          rgba(0, 174, 239, 0.14),
-          rgba(236, 0, 140, 0.13)
-        );
-    }
-
-    .final-panel::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      z-index: -1;
-
-      background:
-        radial-gradient(
-          circle at 20% 50%,
-          rgba(0, 174, 239, 0.16),
-          transparent 30%
-        ),
-        radial-gradient(
-          circle at 80% 50%,
-          rgba(236, 0, 140, 0.14),
-          transparent 30%
-        );
-    }
-
-    .final-panel h2 {
-      margin: 0;
-
-      font-size:
-        clamp(35px, 5.5vw, 66px);
-
-      line-height: 0.95;
-
-      text-transform: uppercase;
-    }
-
-    .final-panel h2 span {
-      display: block;
-
-      margin-top: 7px;
-
-      color: var(--blue-light);
-    }
-
-    .final-panel p {
-      max-width: 680px;
-
-      margin: 16px auto 0;
-
-      color: #d4d6db;
-
-      line-height: 1.65;
-    }
-
-    .final-panel .primary-btn {
-      margin-top: 24px;
-    }
-
     footer {
-      padding: 0 0 38px;
+      padding: 0 0 35px;
 
       text-align: center;
 
-      color: #707680;
+      color: #717680;
 
-      font-size: 11px;
-
+      font-size: 10px;
       letter-spacing: 1px;
-
       text-transform: uppercase;
     }
 
     .footer-line {
       height: 1px;
 
-      margin-bottom: 24px;
+      margin-bottom: 22px;
 
       background:
         linear-gradient(
           90deg,
           transparent,
-          rgba(0, 174, 239, 0.38),
-          rgba(236, 0, 140, 0.38),
+          rgba(0,174,239,.35),
+          rgba(236,0,140,.35),
           transparent
         );
     }
+
+    /* TABLET */
 
     @media (max-width: 980px) {
       .hero-grid {
         grid-template-columns: 1fr;
 
-        padding: 44px 34px;
-      }
-
-      .hero-badge-area {
-        min-height: 300px;
-      }
-
-      .ripken-logo {
-        width: 300px;
-      }
-
-      .players-grid {
-        grid-template-columns:
-          repeat(3, 1fr);
-      }
-    }
-
-    @media (max-width: 760px) {
-      .site-shell {
-        width:
-          min(
-            100% - 20px,
-            1180px
-          );
-      }
-
-      .nav {
-        padding-top: 18px;
-      }
-
-      .hero {
-        padding-top: 8px;
-      }
-
-      .hero-panel {
-        border-radius: 24px;
-      }
-
-      .hero-grid {
-        padding: 32px 20px;
-
-        gap: 6px;
-      }
-
-      .hero-title {
-        font-size:
-          clamp(
-            48px,
-            15vw,
-            82px
-          );
-
-        letter-spacing: -3px;
-      }
-
-      .hero-copy {
-        font-size: 16px;
+        padding:
+          43px
+          34px
+          122px;
       }
 
       .hero-badge-area {
@@ -1074,42 +1090,163 @@
       }
 
       .ripken-logo {
-        width: 235px;
-      }
-
-      .stat-bar {
-        grid-template-columns:
-          repeat(2, 1fr);
-      }
-
-      .stat:nth-child(2)::after {
-        display: none;
-      }
-
-      .stat:nth-child(1),
-      .stat:nth-child(2) {
-        border-bottom:
-          1px solid rgba(
-            255,
-            255,
-            255,
-            0.07
-          );
-      }
-
-      .mission-card {
-        padding: 27px 22px;
-      }
-
-      .mission-inner {
-        grid-template-columns: 1fr;
-
-        gap: 18px;
+        width: 240px;
       }
 
       .players-grid {
         grid-template-columns:
-          repeat(2, 1fr);
+          repeat(3, 1fr);
+      }
+
+      .general-panel {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 700px) {
+      .shell {
+        width:
+          min(
+            100% - 18px,
+            1180px
+          );
+      }
+
+      .header {
+        padding-top: 16px;
+      }
+
+      .hero {
+        padding-top: 6px;
+      }
+
+      .hero-panel {
+        min-height: auto;
+        border-radius: 23px;
+      }
+
+      .hero-grid {
+        padding:
+          29px
+          18px
+          175px;
+
+        gap: 2px;
+      }
+
+      h1 {
+        font-size:
+          clamp(46px, 15vw, 78px);
+
+        letter-spacing: -3px;
+      }
+
+      .hero-copy {
+        font-size: 15px;
+      }
+
+      .hero-buttons {
+        display: grid;
+        grid-template-columns:
+          1fr 1fr;
+
+        gap: 8px;
+      }
+
+      .primary-btn,
+      .secondary-btn {
+        padding:
+          0
+          10px;
+
+        font-size: 10px;
+      }
+
+      .hero-badge-area {
+        min-height: 195px;
+      }
+
+      .ripken-logo {
+        width: 175px;
+      }
+
+      .mountains-back {
+        height: 42%;
+      }
+
+      .mountains-mid {
+        height: 37%;
+      }
+
+      .stats {
+        grid-template-columns:
+          repeat(4, 1fr);
+      }
+
+      .stat {
+        padding:
+          15px
+          4px;
+      }
+
+      .stat strong {
+        font-size: 18px;
+      }
+
+      .stat span {
+        font-size: 7px;
+        letter-spacing: .7px;
+      }
+
+      /* IMPORTANT:
+         ALWAYS TWO COLUMNS ON MOBILE */
+
+      .players-grid {
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
+
+        gap: 9px;
+      }
+
+      .player-card {
+        min-height: 115px;
+
+        padding:
+          15px
+          13px;
+      }
+
+      .player-number {
+        font-size: 11px;
+      }
+
+      .player-name {
+        margin-top: 5px;
+
+        font-size: 15px;
+      }
+
+      .player-action {
+        left: 13px;
+        bottom: 12px;
+
+        font-size: 7px;
+
+        letter-spacing: .7px;
+      }
+
+      .general-panel {
+        padding:
+          27px
+          18px;
+
+        gap: 22px;
+      }
+
+      .general-form {
+        padding: 17px;
       }
 
       .how-grid {
@@ -1117,55 +1254,52 @@
       }
     }
 
-    @media (max-width: 470px) {
-      .hero-grid {
-        padding:
-          29px
-          17px
-          24px;
-      }
-
-      .kicker {
-        letter-spacing: 2.2px;
-        font-size: 10px;
-      }
-
-      .hero-buttons {
-        display: grid;
-        grid-template-columns: 1fr;
-      }
-
-      .primary-btn,
-      .secondary-btn {
-        width: 100%;
-      }
+    @media (max-width: 380px) {
+      /*
+        Do NOT switch the players
+        to one column.
+        Keep 2 x 6.
+      */
 
       .players-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
+
+        gap: 7px;
       }
 
       .player-card {
-        min-height: 140px;
+        min-height: 108px;
+
+        padding:
+          13px
+          10px;
       }
 
-      .final-panel {
-        padding:
-          40px
-          18px;
+      .player-name {
+        font-size: 14px;
+      }
+
+      .player-action {
+        left: 10px;
+
+        font-size: 6.5px;
       }
     }
   </style>
 </head>
 
+
 <body>
 
-  <div class="neon-strip"></div>
+  <div class="top-strip"></div>
 
 
-  <nav class="nav">
-    <div class="site-shell">
+  <header class="header">
 
-      <div class="nav-inner">
+    <div class="shell">
+
+      <div class="header-inner">
 
         <img
           class="legacy-logo"
@@ -1176,7 +1310,9 @@
       </div>
 
     </div>
-  </nav>
+
+  </header>
+
 
 
   <main>
@@ -1186,9 +1322,19 @@
 
     <section class="hero">
 
-      <div class="site-shell">
+      <div class="shell">
 
         <div class="hero-panel">
+
+
+          <div class="mountains-back"></div>
+
+          <div class="mountains-mid"></div>
+
+          <div class="mountain-glow-blue"></div>
+
+          <div class="mountain-glow-pink"></div>
+
 
           <div class="hero-grid">
 
@@ -1198,7 +1344,8 @@
                 South Florida Legacy Baseball
               </div>
 
-              <h1 class="hero-title">
+
+              <h1>
 
                 <span class="road">
                   Road To
@@ -1213,20 +1360,16 @@
 
               <p class="hero-copy">
 
-                Our Legacy family is headed to
+                Help South Florida Legacy
+                make the journey to
                 <strong>
                   Pigeon Forge, Tennessee
                 </strong>
-                for the
+                for an unforgettable baseball
+                experience at the
                 <strong>
                   Ripken Experience.
                 </strong>
-
-                Help our players make the trip,
-                compete, create memories and
-                represent South Florida Legacy
-                on one of youth baseball's
-                biggest stages.
 
               </p>
 
@@ -1242,9 +1385,9 @@
 
                 <a
                   class="secondary-btn"
-                  href="#how-it-works"
+                  href="#general-donation"
                 >
-                  How It Works
+                  General Donation
                 </a>
 
               </div>
@@ -1265,7 +1408,7 @@
           </div>
 
 
-          <div class="stat-bar">
+          <div class="stats">
 
             <div class="stat">
               <strong>12</strong>
@@ -1274,65 +1417,17 @@
 
             <div class="stat">
               <strong>60</strong>
-              <span>Balls Per Player</span>
+              <span>Balls Each</span>
             </div>
 
             <div class="stat">
               <strong>$1–$60</strong>
-              <span>Donation Values</span>
+              <span>Ball Values</span>
             </div>
 
             <div class="stat">
               <strong>TN</strong>
               <span>Pigeon Forge</span>
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-
-    <!-- MISSION -->
-
-    <section class="mission">
-
-      <div class="site-shell">
-
-        <div class="mission-card">
-
-          <div class="mission-inner">
-
-            <div class="mission-big">
-
-              Train Hard.
-
-              <span>
-                Play Legacy.
-              </span>
-
-            </div>
-
-
-            <div class="mission-copy">
-
-              Every player has 60 numbered
-              baseballs available.
-
-              Baseball #1 is a $1 donation,
-              baseball #25 is a $25 donation,
-              baseball #60 is a $60 donation,
-              and you can select multiple
-              baseballs in the same checkout.
-
-              Every contribution helps get our
-              boys one step closer to Pigeon
-              Forge.
-
             </div>
 
           </div>
@@ -1352,12 +1447,12 @@
       id="players"
     >
 
-      <div class="site-shell">
+      <div class="shell">
 
-        <div class="section-heading">
+        <div class="section-head">
 
           <div class="section-label">
-            Pick Your Player
+            Choose Your Player
           </div>
 
           <h2>
@@ -1365,11 +1460,10 @@
           </h2>
 
           <p>
-            Choose a South Florida Legacy
-            player below to open their
-            individual fundraiser and see
-            which baseballs are still
-            available.
+            Select a South Florida Legacy
+            player to view their available
+            baseballs and support their
+            Road to Pigeon Forge.
           </p>
 
         </div>
@@ -1382,20 +1476,12 @@
             class="player-card"
             href="/fundraiser.html?player=chafie-fields"
           >
+            <div class="player-number">#2</div>
+            <div class="player-name">Chafie Fields</div>
 
-            <div class="player-number">
-              #2
+            <div class="player-action">
+              Support Player <span>→</span>
             </div>
-
-            <div class="player-name">
-              Chafie Fields
-            </div>
-
-            <div class="support-link">
-              View Fundraiser
-              <span>→</span>
-            </div>
-
           </a>
 
 
@@ -1403,20 +1489,12 @@
             class="player-card"
             href="/fundraiser.html?player=anthony-raia"
           >
+            <div class="player-number">#3</div>
+            <div class="player-name">Anthony Raia</div>
 
-            <div class="player-number">
-              #3
+            <div class="player-action">
+              Support Player <span>→</span>
             </div>
-
-            <div class="player-name">
-              Anthony Raia
-            </div>
-
-            <div class="support-link">
-              View Fundraiser
-              <span>→</span>
-            </div>
-
           </a>
 
 
@@ -1424,20 +1502,12 @@
             class="player-card"
             href="/fundraiser.html?player=kyrie-rivera"
           >
+            <div class="player-number">#5</div>
+            <div class="player-name">Kyrie Rivera</div>
 
-            <div class="player-number">
-              #5
+            <div class="player-action">
+              Support Player <span>→</span>
             </div>
-
-            <div class="player-name">
-              Kyrie Rivera
-            </div>
-
-            <div class="support-link">
-              View Fundraiser
-              <span>→</span>
-            </div>
-
           </a>
 
 
@@ -1445,20 +1515,12 @@
             class="player-card"
             href="/fundraiser.html?player=jack-lieberman"
           >
+            <div class="player-number">#7</div>
+            <div class="player-name">Jack Lieberman</div>
 
-            <div class="player-number">
-              #7
+            <div class="player-action">
+              Support Player <span>→</span>
             </div>
-
-            <div class="player-name">
-              Jack Lieberman
-            </div>
-
-            <div class="support-link">
-              View Fundraiser
-              <span>→</span>
-            </div>
-
           </a>
 
 
@@ -1466,20 +1528,12 @@
             class="player-card"
             href="/fundraiser.html?player=aaron-reynoso"
           >
+            <div class="player-number">#12</div>
+            <div class="player-name">Aaron Reynoso</div>
 
-            <div class="player-number">
-              #12
+            <div class="player-action">
+              Support Player <span>→</span>
             </div>
-
-            <div class="player-name">
-              Aaron Reynoso
-            </div>
-
-            <div class="support-link">
-              View Fundraiser
-              <span>→</span>
-            </div>
-
           </a>
 
 
@@ -1487,20 +1541,12 @@
             class="player-card"
             href="/fundraiser.html?player=brody-griffin"
           >
+            <div class="player-number">#17</div>
+            <div class="player-name">Brody Griffin</div>
 
-            <div class="player-number">
-              #17
+            <div class="player-action">
+              Support Player <span>→</span>
             </div>
-
-            <div class="player-name">
-              Brody Griffin
-            </div>
-
-            <div class="support-link">
-              View Fundraiser
-              <span>→</span>
-            </div>
-
           </a>
 
 
@@ -1508,20 +1554,12 @@
             class="player-card"
             href="/fundraiser.html?player=matthew-perez"
           >
+            <div class="player-number">#19</div>
+            <div class="player-name">Matthew Perez</div>
 
-            <div class="player-number">
-              #19
+            <div class="player-action">
+              Support Player <span>→</span>
             </div>
-
-            <div class="player-name">
-              Matthew Perez
-            </div>
-
-            <div class="support-link">
-              View Fundraiser
-              <span>→</span>
-            </div>
-
           </a>
 
 
@@ -1529,20 +1567,12 @@
             class="player-card"
             href="/fundraiser.html?player=henry-santana-jr"
           >
+            <div class="player-number">#23</div>
+            <div class="player-name">Henry Santana Jr</div>
 
-            <div class="player-number">
-              #23
+            <div class="player-action">
+              Support Player <span>→</span>
             </div>
-
-            <div class="player-name">
-              Henry Santana Jr
-            </div>
-
-            <div class="support-link">
-              View Fundraiser
-              <span>→</span>
-            </div>
-
           </a>
 
 
@@ -1550,20 +1580,12 @@
             class="player-card"
             href="/fundraiser.html?player=jaxon-weaver"
           >
+            <div class="player-number">#27</div>
+            <div class="player-name">Jaxon Weaver</div>
 
-            <div class="player-number">
-              #27
+            <div class="player-action">
+              Support Player <span>→</span>
             </div>
-
-            <div class="player-name">
-              Jaxon Weaver
-            </div>
-
-            <div class="support-link">
-              View Fundraiser
-              <span>→</span>
-            </div>
-
           </a>
 
 
@@ -1571,20 +1593,12 @@
             class="player-card"
             href="/fundraiser.html?player=evan-chowattukunnel"
           >
+            <div class="player-number">#30</div>
+            <div class="player-name">Evan Chowattukunnel</div>
 
-            <div class="player-number">
-              #30
+            <div class="player-action">
+              Support Player <span>→</span>
             </div>
-
-            <div class="player-name">
-              Evan Chowattukunnel
-            </div>
-
-            <div class="support-link">
-              View Fundraiser
-              <span>→</span>
-            </div>
-
           </a>
 
 
@@ -1592,20 +1606,12 @@
             class="player-card"
             href="/fundraiser.html?player=lucas-colon"
           >
+            <div class="player-number">#50</div>
+            <div class="player-name">Lucas Colon</div>
 
-            <div class="player-number">
-              #50
+            <div class="player-action">
+              Support Player <span>→</span>
             </div>
-
-            <div class="player-name">
-              Lucas Colon
-            </div>
-
-            <div class="support-link">
-              View Fundraiser
-              <span>→</span>
-            </div>
-
           </a>
 
 
@@ -1613,20 +1619,12 @@
             class="player-card"
             href="/fundraiser.html?player=nico-pere"
           >
+            <div class="player-number">#52</div>
+            <div class="player-name">Nico Peré</div>
 
-            <div class="player-number">
-              #52
+            <div class="player-action">
+              Support Player <span>→</span>
             </div>
-
-            <div class="player-name">
-              Nico Peré
-            </div>
-
-            <div class="support-link">
-              View Fundraiser
-              <span>→</span>
-            </div>
-
           </a>
 
 
@@ -1638,19 +1636,145 @@
 
 
 
-    <!-- HOW IT WORKS -->
+    <!-- GENERAL DONATION -->
 
     <section
-      class="how-section"
-      id="how-it-works"
+      class="general-section"
+      id="general-donation"
     >
 
-      <div class="site-shell">
+      <div class="shell">
 
-        <div class="section-heading">
+        <div class="general-panel">
+
+
+          <div class="general-copy">
+
+            <div class="section-label">
+              Support The Team
+            </div>
+
+            <h2>
+              General Donation
+            </h2>
+
+            <p>
+              Don't have a specific player
+              in mind? Make a general donation
+              to support South Florida Legacy's
+              Road to Pigeon Forge.
+            </p>
+
+          </div>
+
+
+
+          <div class="general-form">
+
+
+            <div class="field">
+
+              <label for="teamDonorName">
+                Donor Name
+              </label>
+
+              <input
+                id="teamDonorName"
+                type="text"
+                placeholder="Your name"
+                autocomplete="name"
+              />
+
+            </div>
+
+
+            <div class="field">
+
+              <label for="teamDonorEmail">
+                Email
+              </label>
+
+              <input
+                id="teamDonorEmail"
+                type="email"
+                placeholder="you@example.com"
+                autocomplete="email"
+              />
+
+            </div>
+
+
+            <div class="field">
+
+              <label for="teamAmount">
+                Donation Amount
+              </label>
+
+              <div class="amount-wrap">
+
+                <span class="dollar">$</span>
+
+                <input
+                  id="teamAmount"
+                  type="number"
+                  min="1"
+                  step="1"
+                  placeholder="25"
+                  inputmode="decimal"
+                />
+
+              </div>
+
+            </div>
+
+
+            <label class="anon">
+
+              <input
+                id="teamAnonymous"
+                type="checkbox"
+              />
+
+              Donate anonymously
+
+            </label>
+
+
+            <button
+              id="teamDonateButton"
+              class="donate-btn"
+              type="button"
+            >
+              Make General Donation
+            </button>
+
+
+            <div
+              id="generalMessage"
+              class="general-message"
+            ></div>
+
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- HOW IT WORKS -->
+
+    <section class="how-section">
+
+      <div class="shell">
+
+        <div class="section-head">
 
           <div class="section-label">
-            Road To Pigeon Forge
+            Baseball Fundraiser
           </div>
 
           <h2>
@@ -1675,9 +1799,7 @@
 
             <p>
               Select the South Florida Legacy
-              player you would like to support
-              and open their personal
-              fundraiser page.
+              player you would like to support.
             </p>
 
           </div>
@@ -1694,10 +1816,10 @@
             </h3>
 
             <p>
-              Choose any available baseballs
+              Every player has baseballs
               numbered 1 through 60.
-              The baseball number is the
-              donation amount.
+              The number equals the donation
+              amount.
             </p>
 
           </div>
@@ -1710,62 +1832,17 @@
             </div>
 
             <h3>
-              Send Legacy To Tennessee
+              Support The Journey
             </h3>
 
             <p>
               Complete your secure checkout
-              and help our players make the
-              journey to the Ripken Experience
-              in Pigeon Forge.
+              and help send South Florida
+              Legacy to Pigeon Forge.
             </p>
 
           </div>
 
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-
-    <!-- FINAL CTA -->
-
-    <section class="final-cta">
-
-      <div class="site-shell">
-
-        <div class="final-panel">
-
-          <div class="section-label">
-            Define Your Legacy
-          </div>
-
-          <h2>
-
-            Help Us Reach
-            <span>
-              Pigeon Forge
-            </span>
-
-          </h2>
-
-          <p>
-            Baseball creates memories that
-            last a lifetime. Thank you for
-            supporting our players, our
-            families and the South Florida
-            Legacy journey.
-          </p>
-
-          <a
-            class="primary-btn"
-            href="#players"
-          >
-            Choose A Player
-          </a>
 
         </div>
 
@@ -1780,7 +1857,7 @@
 
   <footer>
 
-    <div class="site-shell">
+    <div class="shell">
 
       <div class="footer-line"></div>
 
@@ -1793,6 +1870,219 @@
     </div>
 
   </footer>
+
+
+
+  <script>
+
+    const teamDonorName =
+      document.getElementById(
+        "teamDonorName"
+      );
+
+    const teamDonorEmail =
+      document.getElementById(
+        "teamDonorEmail"
+      );
+
+    const teamAmount =
+      document.getElementById(
+        "teamAmount"
+      );
+
+    const teamAnonymous =
+      document.getElementById(
+        "teamAnonymous"
+      );
+
+    const teamDonateButton =
+      document.getElementById(
+        "teamDonateButton"
+      );
+
+    const generalMessage =
+      document.getElementById(
+        "generalMessage"
+      );
+
+
+    function showGeneralMessage(
+      message,
+      type
+    ) {
+      generalMessage.textContent =
+        message;
+
+      generalMessage.className =
+        `general-message ${type}`;
+    }
+
+
+    teamAnonymous.addEventListener(
+      "change",
+      () => {
+
+        if (
+          teamAnonymous.checked
+        ) {
+          teamDonorName.value = "";
+          teamDonorName.disabled = true;
+        } else {
+          teamDonorName.disabled = false;
+        }
+
+      }
+    );
+
+
+    teamDonateButton.addEventListener(
+      "click",
+      async () => {
+
+        generalMessage.className =
+          "general-message";
+
+        generalMessage.textContent = "";
+
+
+        const amount =
+          Number(
+            teamAmount.value
+          );
+
+
+        const email =
+          teamDonorEmail
+            .value
+            .trim();
+
+
+        const name =
+          teamDonorName
+            .value
+            .trim();
+
+
+        if (
+          !Number.isFinite(amount) ||
+          amount < 1
+        ) {
+
+          showGeneralMessage(
+            "Please enter a valid donation amount.",
+            "error"
+          );
+
+          teamAmount.focus();
+
+          return;
+        }
+
+
+        if (!email) {
+
+          showGeneralMessage(
+            "Please enter your email address.",
+            "error"
+          );
+
+          teamDonorEmail.focus();
+
+          return;
+        }
+
+
+        teamDonateButton.disabled =
+          true;
+
+        teamDonateButton.textContent =
+          "Opening Checkout...";
+
+
+        try {
+
+          const response =
+            await fetch(
+              "/api/create-team-donation",
+              {
+                method: "POST",
+
+                headers: {
+                  "content-type":
+                    "application/json"
+                },
+
+                body:
+                  JSON.stringify({
+                    amount,
+
+                    donor_name:
+                      name,
+
+                    donor_email:
+                      email,
+
+                    anonymous:
+                      teamAnonymous.checked
+                  })
+              }
+            );
+
+
+          const data =
+            await response.json();
+
+
+          if (
+            !response.ok ||
+            !data.success
+          ) {
+
+            throw new Error(
+              data.error ||
+              "Unable to start checkout."
+            );
+
+          }
+
+
+          if (!data.url) {
+
+            throw new Error(
+              "Checkout URL was not returned."
+            );
+
+          }
+
+
+          window.location.href =
+            data.url;
+
+
+        } catch (error) {
+
+          console.error(error);
+
+
+          showGeneralMessage(
+            error.message ||
+            "Unable to start checkout. Please try again.",
+            "error"
+          );
+
+
+          teamDonateButton.disabled =
+            false;
+
+          teamDonateButton.textContent =
+            "Make General Donation";
+
+        }
+
+      }
+    );
+
+  </script>
 
 
 </body>

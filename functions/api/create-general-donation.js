@@ -33,36 +33,15 @@ async function supabaseGet(env, path) {
   return text ? JSON.parse(text) : [];
 }
 
-async function createStripeCheckout(
-  env,
-  params
-) {
+async function createStripeCheckout(env, params) {
   const body = new URLSearchParams();
 
-  body.set(
-    "mode",
-    "payment"
-  );
+  body.set("mode", "payment");
+  body.set("customer_email", params.donorEmail);
+  body.set("success_url", params.successUrl);
+  body.set("cancel_url", params.cancelUrl);
 
-  body.set(
-    "customer_email",
-    params.donorEmail
-  );
-
-  body.set(
-    "success_url",
-    params.successUrl
-  );
-
-  body.set(
-    "cancel_url",
-    params.cancelUrl
-  );
-
-  body.set(
-    "line_items[0][quantity]",
-    "1"
-  );
+  body.set("line_items[0][quantity]", "1");
 
   body.set(
     "line_items[0][price_data][currency]",
@@ -143,17 +122,14 @@ async function createStripeCheckout(
       headers: {
         authorization:
           `Bearer ${env.STRIPE_SECRET_KEY}`,
-
         "content-type":
           "application/x-www-form-urlencoded",
       },
-      body:
-        body.toString(),
+      body: body.toString(),
     }
   );
 
-  const text =
-    await response.text();
+  const text = await response.text();
 
   let data;
 
@@ -167,11 +143,6 @@ async function createStripeCheckout(
   }
 
   if (!response.ok) {
-    console.error(
-      "STRIPE ERROR:",
-      text
-    );
-
     throw new Error(
       data?.error?.message ||
       "Unable to create Stripe checkout."
@@ -290,27 +261,49 @@ export async function onRequestPost({
         amountDollars * 100
       );
 
-    if (
-      amountCents < 100
-    ) {
+    /*
+      1. FIND TEAM BY TEAM_KEY
+    */
+
+    const teams =
+      await supabaseGet(
+        env,
+        [
+          "teams",
+          "?select=id,team_key,team_name",
+          `&team_key=eq.${encodeURIComponent(
+            env.TEAM_KEY
+          )}`,
+          "&limit=1",
+        ].join("")
+      );
+
+    if (!teams.length) {
       return json(
         {
           success: false,
           error:
-            "Minimum donation is $1.",
+            "Team not found.",
         },
-        400
+        404
       );
     }
 
-    const players =
+    const team =
+      teams[0];
+
+    /*
+      2. FIND PLAYER USING TEAM UUID
+    */
+
+    let players =
       await supabaseGet(
         env,
         [
           "players",
-          "?select=id,name,player_number,slug",
+          "?select=id,player_key,player_name,player_number,slug,name",
           `&team_id=eq.${encodeURIComponent(
-            env.TEAM_KEY
+            team.id
           )}`,
           `&slug=eq.${encodeURIComponent(
             playerSlug
@@ -319,9 +312,25 @@ export async function onRequestPost({
         ].join("")
       );
 
-    if (
-      !players.length
-    ) {
+    if (!players.length) {
+      players =
+        await supabaseGet(
+          env,
+          [
+            "players",
+            "?select=id,player_key,player_name,player_number,slug,name",
+            `&team_id=eq.${encodeURIComponent(
+              team.id
+            )}`,
+            `&player_key=eq.${encodeURIComponent(
+              playerSlug
+            )}`,
+            "&limit=1",
+          ].join("")
+        );
+    }
+
+    if (!players.length) {
       return json(
         {
           success: false,
@@ -334,6 +343,20 @@ export async function onRequestPost({
 
     const player =
       players[0];
+
+    const resolvedName =
+      player.player_name ||
+      player.name ||
+      "";
+
+    const resolvedSlug =
+      player.slug ||
+      player.player_key ||
+      playerSlug;
+
+    /*
+      3. RETURN URLS
+    */
 
     const requestUrl =
       new URL(
@@ -353,7 +376,7 @@ export async function onRequestPost({
     const successUrl =
       `${siteOrigin}/fundraiser.html` +
       `?player=${encodeURIComponent(
-        player.slug
+        resolvedSlug
       )}` +
       `&payment=success` +
       `&session_id={CHECKOUT_SESSION_ID}`;
@@ -361,9 +384,13 @@ export async function onRequestPost({
     const cancelUrl =
       `${siteOrigin}/fundraiser.html` +
       `?player=${encodeURIComponent(
-        player.slug
+        resolvedSlug
       )}` +
       `&payment=cancelled`;
+
+    /*
+      4. CREATE STRIPE SESSION
+    */
 
     const session =
       await createStripeCheckout(
@@ -373,10 +400,10 @@ export async function onRequestPost({
             player.id,
 
           playerSlug:
-            player.slug,
+            resolvedSlug,
 
           playerName:
-            player.name,
+            resolvedName,
 
           playerNumber:
             player.player_number,
@@ -397,9 +424,7 @@ export async function onRequestPost({
         }
       );
 
-    if (
-      !session.url
-    ) {
+    if (!session.url) {
       throw new Error(
         "Stripe did not return a checkout URL."
       );
@@ -407,13 +432,10 @@ export async function onRequestPost({
 
     return json({
       success: true,
-
       url:
         session.url,
-
       sessionId:
         session.id,
-
       amount:
         amountDollars,
     });

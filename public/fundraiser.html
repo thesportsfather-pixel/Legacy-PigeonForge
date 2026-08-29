@@ -2,30 +2,36 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
   />
 
-  <title>South Florida Legacy | Player Fundraiser</title>
+  <title>
+    South Florida Legacy | Player Fundraiser
+  </title>
 
   <meta
     name="description"
     content="Support a South Florida Legacy Baseball player on the Road to Pigeon Forge."
   />
 
+  <meta name="theme-color" content="#050608" />
+
   <style>
     :root {
-      --blue: #00AEEF;
-      --pink: #EC008C;
-      --black: #000000;
-      --white: #FFFFFF;
-      --gray: #A9A9A9;
-      --dark: #0A0A0A;
-      --card: #111111;
-      --border: #292929;
-      --green: #31D17C;
-      --red: #FF5656;
+      --blue: #00aeef;
+      --blue-light: #53d3ff;
+      --pink: #ec008c;
+      --pink-light: #ff4db2;
+      --black: #050608;
+      --charcoal: #111318;
+      --white: #ffffff;
+      --muted: #aeb2bb;
+      --line: rgba(255,255,255,.11);
+      --green: #5fe38b;
+      --red: #ff5c72;
     }
 
     * {
@@ -39,754 +45,1131 @@
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: Arial, Helvetica, sans-serif;
+      overflow-x: hidden;
+
+      font-family:
+        Inter,
+        Arial,
+        Helvetica,
+        sans-serif;
+
       color: var(--white);
+
       background:
         radial-gradient(
-          circle at 15% 0%,
-          rgba(0, 174, 239, 0.18),
-          transparent 32%
+          circle at 15% 5%,
+          rgba(0,174,239,.17),
+          transparent 28%
         ),
         radial-gradient(
-          circle at 90% 15%,
-          rgba(236, 0, 140, 0.14),
+          circle at 88% 7%,
+          rgba(236,0,140,.16),
           transparent 28%
         ),
         linear-gradient(
           180deg,
-          #000000 0%,
-          #0B0B0B 55%,
-          #000000 100%
+          #08090b 0%,
+          #0c0e12 42%,
+          #060709 100%
         );
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      pointer-events: none;
+
+      background:
+        repeating-radial-gradient(
+          ellipse at center,
+          transparent 0,
+          transparent 24px,
+          rgba(255,255,255,.012) 25px,
+          rgba(255,255,255,.012) 26px
+        );
+
+      opacity: .65;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
     }
 
     button,
-    input {
+    input,
+    a {
       font: inherit;
+      -webkit-tap-highlight-color: transparent;
     }
 
-    .page {
-      width: 100%;
-      max-width: 1100px;
+    button {
+      cursor: pointer;
+    }
+
+    .site-shell {
+      width: min(1180px, calc(100% - 28px));
       margin: 0 auto;
-      padding: 16px 14px 60px;
     }
 
-    .topbar {
-      display: flex;
+    .neon-strip {
+      height: 5px;
+
+      background:
+        linear-gradient(
+          90deg,
+          var(--blue),
+          var(--pink),
+          var(--blue)
+        );
+
+      box-shadow:
+        0 0 18px rgba(0,174,239,.7),
+        0 0 30px rgba(236,0,140,.4);
+    }
+
+    .nav {
+      padding: 18px 0 8px;
+    }
+
+    .nav-inner {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      justify-content: space-between;
       gap: 12px;
-      margin-bottom: 8px;
     }
 
-    .back-button {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 14px;
-      border: 1px solid #333;
-      border-radius: 999px;
-      background: #090909;
-      color: white;
-      font-size: 13px;
-      font-weight: 800;
+    .back-link {
+      justify-self: start;
+
+      color: #c8ccd3;
+
       text-decoration: none;
-    }
 
-    .back-button:hover {
-      border-color: var(--blue);
-    }
-
-    .mini-brand {
-      color: var(--gray);
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 900;
+      letter-spacing: 1.2px;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+    }
+
+    .back-link:hover {
+      color: var(--blue-light);
+    }
+
+    .legacy-logo {
+      width: min(520px, 70vw);
     }
 
     .hero {
-      text-align: center;
-      padding: 6px 10px 26px;
+      padding: 16px 0 30px;
     }
 
-    .logo {
-      display: block;
-      width: min(620px, 92%);
-      height: auto;
-      margin: 0 auto 14px;
+    .hero-panel {
+      position: relative;
+      overflow: hidden;
+
+      border-radius: 30px;
+
+      border:
+        1px solid rgba(255,255,255,.11);
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255,255,255,.055),
+          rgba(255,255,255,.018)
+        );
+
+      box-shadow:
+        0 30px 90px rgba(0,0,0,.55);
     }
 
-    .road-label {
-      color: var(--white);
-      font-size: 14px;
+    .hero-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+
+      background:
+        radial-gradient(
+          circle at 15% 30%,
+          rgba(0,174,239,.18),
+          transparent 32%
+        ),
+        radial-gradient(
+          circle at 82% 20%,
+          rgba(236,0,140,.15),
+          transparent 30%
+        );
+
+      pointer-events: none;
+    }
+
+    .hero-grid {
+      position: relative;
+
+      display: grid;
+      grid-template-columns:
+        minmax(0, 1.05fr)
+        minmax(260px, .55fr);
+
+      gap: 26px;
+      align-items: center;
+
+      padding: 42px 46px;
+    }
+
+    .kicker {
+      margin-bottom: 10px;
+
+      color: var(--blue-light);
+
+      font-size: 11px;
       font-weight: 900;
-      letter-spacing: 0.2em;
+      letter-spacing: 2.5px;
       text-transform: uppercase;
     }
 
-    .destination {
-      margin: 5px 0 10px;
-      font-size: clamp(34px, 7vw, 64px);
-      line-height: 0.95;
-      font-weight: 900;
+    .player-title {
+      margin: 0;
+
+      font-size:
+        clamp(42px, 6vw, 76px);
+
+      line-height: .92;
+
       text-transform: uppercase;
-    }
-
-    .destination .blue {
-      color: var(--blue);
-    }
-
-    .destination .pink {
-      color: var(--pink);
-    }
-
-    .player-name {
-      margin-top: 18px;
-      font-size: clamp(30px, 6vw, 52px);
-      line-height: 1;
-      font-weight: 900;
-      text-transform: uppercase;
+      letter-spacing: -3px;
     }
 
     .player-number {
+      display: inline-block;
+
+      margin-top: 12px;
+
       color: var(--pink);
+
+      font-size: 22px;
+      font-weight: 950;
     }
 
-    .subtitle {
-      max-width: 720px;
-      margin: 13px auto 0;
-      color: #D0D0D0;
+    .hero-copy {
+      max-width: 650px;
+
+      margin-top: 18px;
+
+      color: #c6cad2;
+
       font-size: 16px;
-      line-height: 1.55;
+      line-height: 1.62;
     }
 
-    .card {
-      margin: 22px auto;
-      overflow: hidden;
-      border: 1px solid rgba(0, 174, 239, 0.28);
-      border-radius: 24px;
-      background: rgba(17, 17, 17, 0.97);
-      box-shadow:
-        0 20px 65px rgba(0, 0, 0, 0.42);
+    .hero-badge {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      min-height: 250px;
     }
 
-    .card-header {
-      padding: 22px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      background:
-        linear-gradient(
-          135deg,
-          rgba(0, 174, 239, 0.14),
-          rgba(236, 0, 140, 0.09)
+    .hero-badge img {
+      width: min(245px, 85%);
+
+      filter:
+        drop-shadow(
+          0 20px 30px rgba(0,0,0,.55)
         );
     }
 
-    .card-header h2 {
-      margin: 0 0 8px;
-      font-size: 25px;
+    .notice {
+      display: none;
+
+      margin-top: 18px;
+
+      padding: 14px 16px;
+
+      border-radius: 12px;
+
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .notice.success {
+      display: block;
+
+      color: #dfffea;
+
+      border:
+        1px solid rgba(95,227,139,.35);
+
+      background:
+        rgba(95,227,139,.08);
+    }
+
+    .notice.error {
+      display: block;
+
+      color: #ffdce1;
+
+      border:
+        1px solid rgba(255,92,114,.35);
+
+      background:
+        rgba(255,92,114,.08);
+    }
+
+    .notice.info {
+      display: block;
+
+      color: #dcefff;
+
+      border:
+        1px solid rgba(0,174,239,.28);
+
+      background:
+        rgba(0,174,239,.08);
+    }
+
+    .fundraiser-section {
+      padding: 12px 0 48px;
+    }
+
+    .fundraiser-grid {
+      display: grid;
+      grid-template-columns:
+        minmax(0, 1.35fr)
+        minmax(310px, .65fr);
+
+      gap: 20px;
+      align-items: start;
+    }
+
+    .card {
+      border:
+        1px solid rgba(255,255,255,.1);
+
+      border-radius: 22px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255,255,255,.045),
+          rgba(255,255,255,.015)
+        );
+
+      box-shadow:
+        0 18px 50px rgba(0,0,0,.32);
+    }
+
+    .card-head {
+      padding: 24px 24px 0;
+    }
+
+    .card-label {
+      color: var(--pink);
+
+      font-size: 10px;
+      font-weight: 950;
+      letter-spacing: 2.6px;
       text-transform: uppercase;
     }
 
-    .card-header p {
-      margin: 0;
-      color: #BDBDBD;
+    .card h2 {
+      margin: 8px 0 0;
+
+      font-size: 28px;
+      text-transform: uppercase;
+    }
+
+    .card-copy {
+      margin-top: 9px;
+
+      color: #aeb2bb;
+
+      font-size: 14px;
       line-height: 1.55;
     }
 
-    .card-body {
-      padding: 22px;
+    .balls-wrap {
+      padding: 22px 24px 24px;
     }
 
     .balls-grid {
       display: grid;
-      grid-template-columns: repeat(10, minmax(0, 1fr));
-      gap: 10px;
-      margin-bottom: 24px;
+
+      grid-template-columns:
+        repeat(10, minmax(0, 1fr));
+
+      gap: 8px;
     }
 
     .ball {
       aspect-ratio: 1 / 1;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      gap: 2px;
+
+      border:
+        1px solid rgba(255,255,255,.12);
+
       border-radius: 50%;
-      border: 2px solid #E5E5E5;
-      background: #FFFFFF;
-      color: #111111;
-      font-size: 15px;
-      font-weight: 900;
-      cursor: pointer;
-      transition: 0.15s ease;
-      box-shadow:
-        inset -7px -5px 10px rgba(0, 0, 0, 0.08),
-        0 4px 10px rgba(0, 0, 0, 0.26);
+
+      color: #fff;
+
+      background:
+        radial-gradient(
+          circle at 35% 30%,
+          #252932 0%,
+          #15181e 55%,
+          #090a0d 100%
+        );
+
+      transition:
+        transform .15s ease,
+        border-color .15s ease,
+        box-shadow .15s ease,
+        background .15s ease;
     }
 
-    .ball:hover:not(.sold) {
-      transform: translateY(-2px) scale(1.04);
-      border-color: var(--blue);
+    .ball:hover:not(:disabled) {
+      transform: translateY(-2px);
+
+      border-color:
+        rgba(0,174,239,.6);
+
+      box-shadow:
+        0 0 16px rgba(0,174,239,.12);
+    }
+
+    .ball .num {
+      font-size: 14px;
+      font-weight: 950;
+      line-height: 1;
+    }
+
+    .ball .amt {
+      color: #a9adb4;
+
+      font-size: 9px;
+      font-weight: 800;
     }
 
     .ball.selected {
-      background: var(--blue);
-      border-color: var(--pink);
-      color: #000;
-      transform: scale(1.05);
+      border-color:
+        rgba(255,255,255,.65);
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--blue),
+          var(--pink)
+        );
+
       box-shadow:
-        0 0 0 4px rgba(236, 0, 140, 0.15),
-        0 7px 17px rgba(0, 0, 0, 0.34);
+        0 0 18px rgba(0,174,239,.24),
+        0 0 24px rgba(236,0,140,.14);
+    }
+
+    .ball.selected .amt {
+      color: rgba(255,255,255,.85);
     }
 
     .ball.sold {
-      background: #272727;
-      border-color: #444;
-      color: #777;
-      cursor: not-allowed;
+      opacity: .38;
+
+      color: #8b8f96;
+
+      background: #0d0f12;
+
       text-decoration: line-through;
-      opacity: 0.72;
-      box-shadow: none;
+
+      cursor: not-allowed;
     }
 
-    .progress-box {
-      padding: 16px;
-      border: 1px solid var(--border);
-      border-radius: 15px;
-      background: #080808;
-    }
-
-    .progress-header {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 9px;
-      font-size: 14px;
-    }
-
-    .progress-track {
-      height: 11px;
-      overflow: hidden;
-      border-radius: 999px;
-      background: #282828;
-    }
-
-    .progress-fill {
-      width: 0%;
-      height: 100%;
-      background: linear-gradient(
-        90deg,
-        var(--blue),
-        var(--pink)
-      );
-      transition: width 0.35s ease;
-    }
-
-    .summary {
-      margin-top: 18px;
-      padding: 18px;
-      border: 1px solid var(--border);
-      border-radius: 15px;
-      background: #080808;
-    }
-
-    .summary-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 14px;
-      margin-bottom: 10px;
-    }
-
-    .summary-row:last-child {
-      margin-bottom: 0;
-    }
-
-    .summary-label {
-      color: var(--gray);
-    }
-
-    .summary-value {
-      text-align: right;
-      font-weight: 900;
-    }
-
-    .total {
-      color: var(--green);
-      font-size: 24px;
-    }
-
-    .form-grid {
+    .selection-summary {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr auto;
+
       gap: 14px;
+      align-items: center;
+
       margin-top: 20px;
+
+      padding-top: 18px;
+
+      border-top:
+        1px solid rgba(255,255,255,.08);
     }
 
-    label {
-      display: block;
-      margin-bottom: 8px;
+    .selection-label {
+      color: #969ba5;
+
+      font-size: 11px;
       font-weight: 900;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
     }
 
-    input {
+    .selection-total {
+      margin-top: 5px;
+
+      font-size: 28px;
+      font-weight: 950;
+    }
+
+    .checkout-card {
+      position: sticky;
+      top: 18px;
+    }
+
+    .checkout-body {
+      padding: 24px;
+    }
+
+    .field {
+      margin-bottom: 14px;
+    }
+
+    .field label {
+      display: block;
+
+      margin-bottom: 7px;
+
+      color: #cdd0d6;
+
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+
+    .field input {
       width: 100%;
-      padding: 14px 15px;
-      border: 1px solid #333;
-      border-radius: 14px;
+
+      min-height: 48px;
+
+      padding: 0 14px;
+
+      border-radius: 11px;
+
+      border:
+        1px solid rgba(255,255,255,.11);
+
       outline: none;
-      background: #070707;
+
       color: white;
-      font-size: 16px;
+
+      background:
+        rgba(0,0,0,.25);
     }
 
-    input:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 3px rgba(0, 174, 239, 0.13);
+    .field input:focus {
+      border-color:
+        rgba(0,174,239,.65);
+
+      box-shadow:
+        0 0 0 3px rgba(0,174,239,.08);
     }
 
-    .anonymous {
+    .anon-row {
       display: flex;
       align-items: center;
       gap: 9px;
-      margin-top: 12px;
-      color: #D0D0D0;
-      font-size: 14px;
-      cursor: pointer;
+
+      margin:
+        3px 0
+        18px;
+
+      color: #b7bbc2;
+
+      font-size: 13px;
     }
 
-    .anonymous input {
-      width: 18px;
-      height: 18px;
-      margin: 0;
-      accent-color: var(--pink);
+    .anon-row input {
+      width: 17px;
+      height: 17px;
     }
 
-    .button {
+    .checkout-btn {
       width: 100%;
-      margin-top: 22px;
-      padding: 17px 20px;
+      min-height: 52px;
+
       border: 0;
-      border-radius: 16px;
-      background: linear-gradient(
-        135deg,
-        var(--blue),
-        var(--pink)
-      );
-      color: #000;
-      font-size: 18px;
-      font-weight: 900;
+      border-radius: 12px;
+
+      color: white;
+
+      font-size: 13px;
+      font-weight: 950;
+      letter-spacing: 1px;
       text-transform: uppercase;
-      cursor: pointer;
+
+      background:
+        linear-gradient(
+          115deg,
+          var(--blue),
+          var(--pink)
+        );
+
+      box-shadow:
+        0 12px 28px rgba(0,174,239,.16),
+        0 0 26px rgba(236,0,140,.1);
     }
 
-    .button:disabled {
-      opacity: 0.42;
+    .checkout-btn:disabled {
+      opacity: .45;
       cursor: not-allowed;
     }
 
-    .status {
-      min-height: 22px;
-      margin-top: 13px;
-      text-align: center;
-      font-size: 14px;
+    .general-card {
+      margin-top: 18px;
     }
 
-    .status.success {
-      color: var(--green);
-    }
-
-    .status.error {
-      color: var(--red);
-    }
-
-    .general-note {
-      max-width: 720px;
-      margin: 0 auto 20px;
-      padding: 14px 16px;
-      border: 1px solid rgba(236, 0, 140, 0.28);
-      border-radius: 14px;
-      background: rgba(236, 0, 140, 0.06);
-      color: #D0D0D0;
-      text-align: center;
-      line-height: 1.5;
-    }
-
-    .amount-wrap {
-      max-width: 380px;
-      margin: 0 auto;
-    }
-
-    .amount-field {
+    .general-amount-wrap {
       position: relative;
     }
 
-    .amount-field span {
+    .general-dollar {
       position: absolute;
-      left: 15px;
-      top: 13px;
-      z-index: 2;
-      color: var(--blue);
-      font-size: 19px;
-      font-weight: 900;
+      left: 14px;
+      top: 50%;
+
+      transform:
+        translateY(-50%);
+
+      color: var(--blue-light);
+
+      font-weight: 950;
     }
 
-    .amount-field input {
-      padding-left: 35px;
+    .general-amount-wrap input {
+      padding-left: 30px;
     }
 
-    .footer {
-      padding-top: 32px;
-      color: #777;
+    .small-note {
+      margin-top: 12px;
+
+      color: #858a94;
+
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .loading {
+      opacity: .55;
+      pointer-events: none;
+    }
+
+    footer {
+      padding: 0 0 35px;
+
       text-align: center;
-      font-size: 13px;
-      line-height: 1.7;
+
+      color: #707680;
+
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
     }
 
-    .footer strong {
-      color: var(--blue);
+    .footer-line {
+      height: 1px;
+
+      margin-bottom: 22px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(0,174,239,.36),
+          rgba(236,0,140,.36),
+          transparent
+        );
     }
 
-    .footer .pink {
-      color: var(--pink);
-    }
+    @media (max-width: 980px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
 
-    @media (max-width: 800px) {
-      .balls-grid {
-        grid-template-columns: repeat(6, minmax(0, 1fr));
+        padding: 34px 28px;
       }
 
-      .form-grid {
+      .hero-badge {
+        min-height: 210px;
+      }
+
+      .hero-badge img {
+        width: 210px;
+      }
+
+      .fundraiser-grid {
         grid-template-columns: 1fr;
       }
-    }
 
-    @media (max-width: 520px) {
-      .page {
-        padding-left: 10px;
-        padding-right: 10px;
+      .checkout-card {
+        position: static;
       }
 
       .balls-grid {
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-        gap: 8px;
+        grid-template-columns:
+          repeat(8, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 700px) {
+      .site-shell {
+        width:
+          min(
+            100% - 18px,
+            1180px
+          );
       }
 
-      .ball {
-        font-size: 14px;
+      .nav-inner {
+        grid-template-columns: auto 1fr;
       }
 
-      .card {
-        border-radius: 18px;
+      .legacy-logo {
+        justify-self: end;
+        width: min(390px, 67vw);
       }
 
-      .card-body {
-        padding: 16px;
+      .hero {
+        padding-top: 8px;
       }
 
-      .topbar {
-        align-items: flex-start;
+      .hero-panel {
+        border-radius: 22px;
       }
 
-      .mini-brand {
-        display: none;
+      .hero-grid {
+        padding: 28px 18px;
+      }
+
+      .player-title {
+        font-size:
+          clamp(40px, 13vw, 66px);
+      }
+
+      .hero-badge {
+        min-height: 170px;
+      }
+
+      .hero-badge img {
+        width: 170px;
+      }
+
+      .balls-grid {
+        grid-template-columns:
+          repeat(6, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 460px) {
+      .balls-grid {
+        grid-template-columns:
+          repeat(5, minmax(0, 1fr));
+
+        gap: 7px;
+      }
+
+      .ball .num {
+        font-size: 12px;
+      }
+
+      .ball .amt {
+        font-size: 8px;
+      }
+
+      .card-head,
+      .balls-wrap,
+      .checkout-body {
+        padding-left: 17px;
+        padding-right: 17px;
+      }
+
+      .selection-summary {
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 
 <body>
-  <main class="page">
 
-    <div class="topbar">
-      <a href="/" class="back-button">
-        ← Back to Players
-      </a>
+  <div class="neon-strip"></div>
 
-      <div class="mini-brand">
-        South Florida Legacy Baseball
+
+  <nav class="nav">
+
+    <div class="site-shell">
+
+      <div class="nav-inner">
+
+        <a
+          class="back-link"
+          href="/"
+        >
+          ← Back
+        </a>
+
+        <img
+          class="legacy-logo"
+          src="/legacy-logo.png"
+          alt="South Florida Legacy Baseball"
+        />
+
+        <div></div>
+
       </div>
+
     </div>
+
+  </nav>
+
+
+  <main>
+
 
     <section class="hero">
 
-      <img
-        src="/legacy-logo.png"
-        alt="South Florida Legacy Baseball"
-        class="logo"
-      />
+      <div class="site-shell">
 
-      <div class="road-label">
-        Road to
+        <div class="hero-panel">
+
+          <div class="hero-grid">
+
+            <div>
+
+              <div class="kicker">
+                Road To Pigeon Forge
+              </div>
+
+              <h1
+                class="player-title"
+                id="playerName"
+              >
+                Legacy Player
+              </h1>
+
+              <div
+                class="player-number"
+                id="playerNumber"
+              >
+                #
+              </div>
+
+              <p class="hero-copy">
+                Select one or more available
+                baseballs below to support this
+                South Florida Legacy player on
+                the journey to the Ripken
+                Experience in Pigeon Forge,
+                Tennessee.
+              </p>
+
+              <div
+                id="pageNotice"
+                class="notice"
+              ></div>
+
+            </div>
+
+
+            <div class="hero-badge">
+
+              <img
+                src="/ripken-pigeon-forge.webp"
+                alt="Ripken Experience Pigeon Forge"
+              />
+
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
-
-      <div class="destination">
-        <span class="blue">Pigeon</span>
-        <span class="pink">Forge</span>
-      </div>
-
-      <div
-        id="playerName"
-        class="player-name"
-      >
-        Loading Player...
-      </div>
-
-      <p class="subtitle">
-        Help support this South Florida Legacy player
-        on the journey to the Ripken Experience in
-        Pigeon Forge, Tennessee.
-      </p>
 
     </section>
 
 
-    <section class="card">
 
-      <div class="card-header">
-        <h2>Pick a Baseball</h2>
+    <section class="fundraiser-section">
 
-        <p>
-          Each baseball number equals the donation amount.
-          Ball #1 is $1, Ball #25 is $25, and Ball #60 is $60.
-          You can select multiple available baseballs.
-        </p>
-      </div>
+      <div class="site-shell">
 
-      <div class="card-body">
+        <div class="fundraiser-grid">
 
-        <div
-          id="ballsGrid"
-          class="balls-grid"
-        ></div>
 
-        <div class="progress-box">
+          <!-- BASEBALLS -->
 
-          <div class="progress-header">
-            <span>Fundraiser Progress</span>
+          <div class="card">
 
-            <strong id="progressText">
-              0 / 60 sold
-            </strong>
+            <div class="card-head">
+
+              <div class="card-label">
+                Choose Your Baseballs
+              </div>
+
+              <h2>
+                1 Through 60
+              </h2>
+
+              <div class="card-copy">
+                The baseball number equals
+                the donation amount. Select
+                as many available baseballs
+                as you would like.
+              </div>
+
+            </div>
+
+
+            <div class="balls-wrap">
+
+              <div
+                class="balls-grid"
+                id="ballsGrid"
+              ></div>
+
+
+              <div class="selection-summary">
+
+                <div>
+
+                  <div class="selection-label">
+                    Selected Baseballs
+                  </div>
+
+                  <div
+                    id="selectedBallsText"
+                    class="small-note"
+                  >
+                    None selected
+                  </div>
+
+                </div>
+
+
+                <div>
+
+                  <div class="selection-label">
+                    Donation Total
+                  </div>
+
+                  <div
+                    id="selectedTotal"
+                    class="selection-total"
+                  >
+                    $0
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
           </div>
 
-          <div class="progress-track">
+
+
+          <!-- CHECKOUT -->
+
+          <div>
+
+
             <div
-              id="progressFill"
-              class="progress-fill"
-            ></div>
-          </div>
-
-        </div>
-
-
-        <div class="summary">
-
-          <div class="summary-row">
-            <span class="summary-label">
-              Selected Baseballs
-            </span>
-
-            <span
-              id="selectedBalls"
-              class="summary-value"
+              class="card checkout-card"
+              id="checkoutCard"
             >
-              None
-            </span>
-          </div>
 
-          <div class="summary-row">
-            <span class="summary-label">
-              Donation Total
-            </span>
+              <div class="card-head">
 
-            <span
-              id="donationTotal"
-              class="summary-value total"
-            >
-              $0
-            </span>
+                <div class="card-label">
+                  Secure Checkout
+                </div>
+
+                <h2>
+                  Complete Support
+                </h2>
+
+              </div>
+
+
+              <div class="checkout-body">
+
+                <div class="field">
+
+                  <label for="donorName">
+                    Donor Name
+                  </label>
+
+                  <input
+                    id="donorName"
+                    type="text"
+                    placeholder="Your name"
+                    autocomplete="name"
+                  />
+
+                </div>
+
+
+                <div class="field">
+
+                  <label for="donorEmail">
+                    Email
+                  </label>
+
+                  <input
+                    id="donorEmail"
+                    type="email"
+                    placeholder="you@example.com"
+                    autocomplete="email"
+                  />
+
+                </div>
+
+
+                <label class="anon-row">
+
+                  <input
+                    id="anonymous"
+                    type="checkbox"
+                  />
+
+                  Donate anonymously
+
+                </label>
+
+
+                <button
+                  id="checkoutButton"
+                  class="checkout-btn"
+                  type="button"
+                  disabled
+                >
+                  Select Baseballs
+                </button>
+
+
+                <div class="small-note">
+                  You'll be redirected to
+                  Stripe to complete your
+                  secure payment.
+                </div>
+
+              </div>
+
+            </div>
+
+
+
+            <!-- GENERAL DONATION -->
+
+            <div class="card general-card">
+
+              <div class="card-head">
+
+                <div class="card-label">
+                  General Donation
+                </div>
+
+                <h2>
+                  Any Amount
+                </h2>
+
+                <div class="card-copy">
+                  Prefer not to select a
+                  baseball? Make a general
+                  donation directly to this
+                  player's fundraiser.
+                </div>
+
+              </div>
+
+
+              <div class="checkout-body">
+
+                <div class="field">
+
+                  <label for="generalAmount">
+                    Donation Amount
+                  </label>
+
+                  <div class="general-amount-wrap">
+
+                    <span class="general-dollar">
+                      $
+                    </span>
+
+                    <input
+                      id="generalAmount"
+                      type="number"
+                      min="1"
+                      step="1"
+                      inputmode="decimal"
+                      placeholder="25"
+                    />
+
+                  </div>
+
+                </div>
+
+
+                <button
+                  id="generalButton"
+                  class="checkout-btn"
+                  type="button"
+                >
+                  Make General Donation
+                </button>
+
+              </div>
+
+            </div>
+
+
           </div>
 
         </div>
-
-
-        <div class="form-grid">
-
-          <div>
-            <label for="donorName">
-              Donor Name
-            </label>
-
-            <input
-              id="donorName"
-              type="text"
-              placeholder="Your name"
-              autocomplete="name"
-            />
-
-            <label class="anonymous">
-              <input
-                id="anonymous"
-                type="checkbox"
-              />
-
-              Remain anonymous
-            </label>
-          </div>
-
-          <div>
-            <label for="donorEmail">
-              Email
-            </label>
-
-            <input
-              id="donorEmail"
-              type="email"
-              placeholder="you@example.com"
-              autocomplete="email"
-            />
-          </div>
-
-        </div>
-
-
-        <button
-          id="checkoutButton"
-          class="button"
-          disabled
-        >
-          Continue to Secure Checkout
-        </button>
-
-        <div
-          id="ballStatus"
-          class="status"
-        ></div>
 
       </div>
 
     </section>
 
-
-    <section class="card">
-
-      <div class="card-header">
-        <h2>General Donation</h2>
-
-        <p>
-          Prefer not to select a baseball? Make a custom
-          donation directly to this player's fundraiser.
-        </p>
-      </div>
-
-      <div class="card-body">
-
-        <div class="general-note">
-          General donations support this player but do not
-          reserve or mark a baseball as sold.
-        </div>
-
-        <div class="amount-wrap">
-
-          <label for="generalAmount">
-            Donation Amount
-          </label>
-
-          <div class="amount-field">
-
-            <span>$</span>
-
-            <input
-              id="generalAmount"
-              type="number"
-              min="1"
-              step="1"
-              inputmode="decimal"
-              placeholder="25"
-            />
-
-          </div>
-
-        </div>
-
-
-        <div class="form-grid">
-
-          <div>
-            <label for="generalDonorName">
-              Donor Name
-            </label>
-
-            <input
-              id="generalDonorName"
-              type="text"
-              placeholder="Your name"
-              autocomplete="name"
-            />
-
-            <label class="anonymous">
-              <input
-                id="generalAnonymous"
-                type="checkbox"
-              />
-
-              Remain anonymous
-            </label>
-          </div>
-
-          <div>
-            <label for="generalDonorEmail">
-              Email
-            </label>
-
-            <input
-              id="generalDonorEmail"
-              type="email"
-              placeholder="you@example.com"
-              autocomplete="email"
-            />
-          </div>
-
-        </div>
-
-
-        <button
-          id="generalDonationButton"
-          class="button"
-        >
-          Make General Donation
-        </button>
-
-        <div
-          id="generalStatus"
-          class="status"
-        ></div>
-
-      </div>
-
-    </section>
-
-
-    <footer class="footer">
-      <strong>
-        South Florida Legacy Baseball
-      </strong>
-
-      <br />
-
-      Road to
-      <span class="pink">
-        Pigeon Forge
-      </span>
-
-      • Ripken Experience • Tennessee
-
-      <br />
-
-      #DefineYourLegacy
-    </footer>
 
   </main>
 
 
+
+  <footer>
+
+    <div class="site-shell">
+
+      <div class="footer-line"></div>
+
+      South Florida Legacy Baseball
+      &nbsp;•&nbsp;
+      Road To Pigeon Forge
+      &nbsp;•&nbsp;
+      2026
+
+    </div>
+
+  </footer>
+
+
+
   <script>
+
     const players = {
       "chafie-fields": {
         name: "Chafie Fields",
@@ -862,79 +1245,98 @@
       players[playerSlug];
 
 
-    const playerName =
-      document.getElementById("playerName");
-
     const ballsGrid =
-      document.getElementById("ballsGrid");
+      document.getElementById(
+        "ballsGrid"
+      );
 
-    const selectedBallsEl =
-      document.getElementById("selectedBalls");
+    const playerName =
+      document.getElementById(
+        "playerName"
+      );
 
-    const donationTotal =
-      document.getElementById("donationTotal");
+    const playerNumber =
+      document.getElementById(
+        "playerNumber"
+      );
 
-    const progressText =
-      document.getElementById("progressText");
+    const selectedTotal =
+      document.getElementById(
+        "selectedTotal"
+      );
 
-    const progressFill =
-      document.getElementById("progressFill");
+    const selectedBallsText =
+      document.getElementById(
+        "selectedBallsText"
+      );
 
     const donorName =
-      document.getElementById("donorName");
+      document.getElementById(
+        "donorName"
+      );
 
     const donorEmail =
-      document.getElementById("donorEmail");
+      document.getElementById(
+        "donorEmail"
+      );
 
     const anonymous =
-      document.getElementById("anonymous");
+      document.getElementById(
+        "anonymous"
+      );
 
     const checkoutButton =
-      document.getElementById("checkoutButton");
-
-    const ballStatus =
-      document.getElementById("ballStatus");
-
+      document.getElementById(
+        "checkoutButton"
+      );
 
     const generalAmount =
-      document.getElementById("generalAmount");
+      document.getElementById(
+        "generalAmount"
+      );
 
-    const generalDonorName =
-      document.getElementById("generalDonorName");
+    const generalButton =
+      document.getElementById(
+        "generalButton"
+      );
 
-    const generalDonorEmail =
-      document.getElementById("generalDonorEmail");
+    const pageNotice =
+      document.getElementById(
+        "pageNotice"
+      );
 
-    const generalAnonymous =
-      document.getElementById("generalAnonymous");
-
-    const generalDonationButton =
-      document.getElementById("generalDonationButton");
-
-    const generalStatus =
-      document.getElementById("generalStatus");
-
-
-    let selectedBalls = [];
-    let soldBalls = [];
+    const checkoutCard =
+      document.getElementById(
+        "checkoutCard"
+      );
 
 
-    function setStatus(
-      element,
+    let soldBalls =
+      new Set();
+
+    let selectedBalls =
+      new Set();
+
+
+    function showNotice(
       message,
-      error = false
+      type = "info"
     ) {
-      element.textContent =
-        message || "";
+      pageNotice.textContent =
+        message;
 
-      element.className =
-        error
-          ? "status error"
-          : "status success";
+      pageNotice.className =
+        `notice ${type}`;
     }
 
 
-    function buildBalls() {
+    function clearNotice() {
+      pageNotice.textContent = "";
+      pageNotice.className = "notice";
+    }
+
+
+    function renderBalls() {
       ballsGrid.innerHTML = "";
 
       for (
@@ -943,106 +1345,143 @@
         number++
       ) {
         const button =
-          document.createElement("button");
+          document.createElement(
+            "button"
+          );
 
-        button.type = "button";
-        button.className = "ball";
-        button.textContent = number;
+        button.type =
+          "button";
+
+        button.className =
+          "ball";
+
+        button.dataset.number =
+          String(number);
+
+        button.innerHTML =
+          `
+            <span class="num">
+              ${number}
+            </span>
+
+            <span class="amt">
+              $${number}
+            </span>
+          `;
 
         if (
-          soldBalls.includes(number)
+          soldBalls.has(number)
         ) {
-          button.classList.add("sold");
-          button.disabled = true;
+          button.classList.add(
+            "sold"
+          );
+
+          button.disabled =
+            true;
         }
 
         if (
-          selectedBalls.includes(number)
+          selectedBalls.has(
+            number
+          )
         ) {
-          button.classList.add("selected");
+          button.classList.add(
+            "selected"
+          );
         }
 
         button.addEventListener(
           "click",
-          () => toggleBall(number)
+          () => {
+            toggleBall(number);
+          }
         );
 
-        ballsGrid.appendChild(button);
+        ballsGrid.appendChild(
+          button
+        );
       }
     }
 
 
     function toggleBall(number) {
       if (
-        soldBalls.includes(number)
+        soldBalls.has(number)
       ) {
         return;
       }
 
       if (
-        selectedBalls.includes(number)
+        selectedBalls.has(
+          number
+        )
       ) {
-        selectedBalls =
-          selectedBalls.filter(
-            value =>
-              value !== number
-          );
+        selectedBalls.delete(
+          number
+        );
       } else {
-        selectedBalls.push(number);
+        selectedBalls.add(
+          number
+        );
       }
 
-      selectedBalls.sort(
-        (a, b) => a - b
-      );
-
-      buildBalls();
-      updateSummary();
+      updateSelection();
+      renderBalls();
     }
 
 
-    function updateSummary() {
-      if (
-        selectedBalls.length === 0
-      ) {
-        selectedBallsEl.textContent =
-          "None";
-
-        donationTotal.textContent =
-          "$0";
-
-        checkoutButton.disabled =
-          true;
-
-        return;
-      }
-
-      selectedBallsEl.textContent =
-        selectedBalls.join(", ");
+    function updateSelection() {
+      const sorted =
+        Array.from(
+          selectedBalls
+        ).sort(
+          (a, b) =>
+            a - b
+        );
 
       const total =
-        selectedBalls.reduce(
+        sorted.reduce(
           (sum, number) =>
             sum + number,
           0
         );
 
-      donationTotal.textContent =
-        `$${total.toLocaleString()}`;
+      selectedTotal.textContent =
+        `$${total}`;
+
+      selectedBallsText.textContent =
+        sorted.length
+          ? sorted
+              .map(
+                number =>
+                  `#${number}`
+              )
+              .join(", ")
+          : "None selected";
 
       checkoutButton.disabled =
-        false;
+        sorted.length === 0;
+
+      checkoutButton.textContent =
+        sorted.length
+          ? `Donate $${total}`
+          : "Select Baseballs";
     }
 
 
-    function updateProgress() {
-      const soldCount =
-        soldBalls.length;
+    function setLoading(
+      button,
+      loading,
+      loadingText,
+      normalText
+    ) {
+      button.disabled =
+        loading;
 
-      progressText.textContent =
-        `${soldCount} / 60 sold`;
-
-      progressFill.style.width =
-        `${(soldCount / 60) * 100}%`;
+      button.textContent =
+        loading
+          ? loadingText
+          : normalText;
     }
 
 
@@ -1051,39 +1490,40 @@
         playerName.textContent =
           "Player Not Found";
 
-        setStatus(
-          ballStatus,
-          "Please return to the player list and choose a player.",
-          true
+        playerNumber.textContent =
+          "";
+
+        showNotice(
+          "This fundraiser link is not valid.",
+          "error"
         );
 
-        checkoutButton.disabled = true;
-        generalDonationButton.disabled = true;
+        ballsGrid.innerHTML = "";
+
+        checkoutButton.disabled =
+          true;
+
+        generalButton.disabled =
+          true;
 
         return;
       }
 
-      playerName.innerHTML =
-        `<span class="player-number">#${player.number}</span> ${player.name}`;
+      playerName.textContent =
+        player.name;
 
-      document.title =
-        `${player.name} | Road to Pigeon Forge`;
-
-      buildBalls();
-      updateSummary();
-      updateProgress();
-
-      setStatus(
-        ballStatus,
-        "Loading baseball availability..."
-      );
+      playerNumber.textContent =
+        `#${player.number}`;
 
       try {
         const response =
           await fetch(
-            `/api/fundraiser?player=${encodeURIComponent(playerSlug)}`,
+            `/api/fundraiser?player=${encodeURIComponent(
+              playerSlug
+            )}`,
             {
-              cache: "no-store"
+              cache:
+                "no-store"
             }
           );
 
@@ -1092,7 +1532,7 @@
 
         if (
           !response.ok ||
-          data.success === false
+          !data.success
         ) {
           throw new Error(
             data.error ||
@@ -1101,37 +1541,27 @@
         }
 
         soldBalls =
-          Array.isArray(data.soldBalls)
-            ? data.soldBalls
-                .map(Number)
-                .filter(
-                  number =>
-                    Number.isInteger(number) &&
-                    number >= 1 &&
-                    number <= 60
+          new Set(
+            Array.isArray(
+              data.soldBalls
+            )
+              ? data.soldBalls.map(
+                  Number
                 )
-            : [];
+              : []
+          );
 
-        buildBalls();
-        updateProgress();
+        renderBalls();
 
-        setStatus(
-          ballStatus,
-          ""
-        );
       } catch (error) {
         console.error(error);
 
-        soldBalls = [];
-
-        buildBalls();
-        updateProgress();
-
-        setStatus(
-          ballStatus,
-          "Unable to load baseball availability.",
-          true
+        showNotice(
+          "We couldn't load the latest baseball availability. Please refresh and try again.",
+          "error"
         );
+
+        renderBalls();
       }
     }
 
@@ -1139,38 +1569,15 @@
     anonymous.addEventListener(
       "change",
       () => {
-        donorName.disabled =
-          anonymous.checked;
-
         if (
           anonymous.checked
         ) {
           donorName.value = "";
-          donorName.placeholder =
-            "Anonymous";
+          donorName.disabled =
+            true;
         } else {
-          donorName.placeholder =
-            "Your name";
-        }
-      }
-    );
-
-
-    generalAnonymous.addEventListener(
-      "change",
-      () => {
-        generalDonorName.disabled =
-          generalAnonymous.checked;
-
-        if (
-          generalAnonymous.checked
-        ) {
-          generalDonorName.value = "";
-          generalDonorName.placeholder =
-            "Anonymous";
-        } else {
-          generalDonorName.placeholder =
-            "Your name";
+          donorName.disabled =
+            false;
         }
       }
     );
@@ -1179,30 +1586,61 @@
     checkoutButton.addEventListener(
       "click",
       async () => {
+        clearNotice();
+
+        const baseballs =
+          Array.from(
+            selectedBalls
+          ).sort(
+            (a, b) =>
+              a - b
+          );
+
         if (
-          !player ||
-          selectedBalls.length === 0
+          !baseballs.length
         ) {
+          showNotice(
+            "Please select at least one baseball.",
+            "error"
+          );
+
           return;
         }
 
         const email =
           donorEmail.value.trim();
 
+        const name =
+          donorName.value.trim();
+
         if (!email) {
-          setStatus(
-            ballStatus,
+          showNotice(
             "Please enter your email address.",
-            true
+            "error"
           );
 
           donorEmail.focus();
+
           return;
         }
 
-        checkoutButton.disabled = true;
-        checkoutButton.textContent =
-          "Creating Checkout...";
+        const total =
+          baseballs.reduce(
+            (sum, number) =>
+              sum + number,
+            0
+          );
+
+        setLoading(
+          checkoutButton,
+          true,
+          "Opening Checkout...",
+          `Donate $${total}`
+        );
+
+        checkoutCard.classList.add(
+          "loading"
+        );
 
         try {
           const response =
@@ -1227,19 +1665,10 @@
                     player_number:
                       player.number,
 
-                    baseballs:
-                      selectedBalls,
+                    baseballs,
 
                     donor_name:
-                      anonymous.checked
-                        ? "Anonymous"
-                        : (
-                            donorName
-                              .value
-                              .trim()
-                            ||
-                            "Anonymous"
-                          ),
+                      name,
 
                     donor_email:
                       email,
@@ -1254,8 +1683,35 @@
             await response.json();
 
           if (
+            response.status === 409
+          ) {
+            if (
+              Array.isArray(
+                data.unavailableBalls
+              )
+            ) {
+              data.unavailableBalls
+                .map(Number)
+                .forEach(
+                  number => {
+                    soldBalls.add(
+                      number
+                    );
+
+                    selectedBalls.delete(
+                      number
+                    );
+                  }
+                );
+
+              renderBalls();
+              updateSelection();
+            }
+          }
+
+          if (
             !response.ok ||
-            !data.url
+            !data.success
           ) {
             throw new Error(
               data.error ||
@@ -1263,75 +1719,88 @@
             );
           }
 
+          if (!data.url) {
+            throw new Error(
+              "Checkout URL was not returned."
+            );
+          }
+
           window.location.href =
             data.url;
+
         } catch (error) {
           console.error(error);
 
-          setStatus(
-            ballStatus,
+          showNotice(
             error.message ||
-            "Checkout failed. Please try again.",
-            true
+            "Unable to start checkout. Please try again.",
+            "error"
           );
 
-          checkoutButton.disabled =
-            false;
+          checkoutCard.classList.remove(
+            "loading"
+          );
 
-          checkoutButton.textContent =
-            "Continue to Secure Checkout";
+          setLoading(
+            checkoutButton,
+            false,
+            "",
+            `Donate $${total}`
+          );
         }
       }
     );
 
 
-    generalDonationButton.addEventListener(
+    generalButton.addEventListener(
       "click",
       async () => {
-        if (!player) {
-          return;
-        }
+        clearNotice();
 
         const amount =
           Number(
             generalAmount.value
           );
 
+        const email =
+          donorEmail.value.trim();
+
+        const name =
+          donorName.value.trim();
+
         if (
-          !Number.isFinite(amount) ||
+          !Number.isFinite(
+            amount
+          ) ||
           amount < 1
         ) {
-          setStatus(
-            generalStatus,
+          showNotice(
             "Please enter a valid donation amount.",
-            true
+            "error"
           );
 
           generalAmount.focus();
+
           return;
         }
-
-        const email =
-          generalDonorEmail
-            .value
-            .trim();
 
         if (!email) {
-          setStatus(
-            generalStatus,
-            "Please enter your email address.",
-            true
+          showNotice(
+            "Please enter your email address above.",
+            "error"
           );
 
-          generalDonorEmail.focus();
+          donorEmail.focus();
+
           return;
         }
 
-        generalDonationButton.disabled =
-          true;
-
-        generalDonationButton.textContent =
-          "Creating Checkout...";
+        setLoading(
+          generalButton,
+          true,
+          "Opening Checkout...",
+          "Make General Donation"
+        );
 
         try {
           const response =
@@ -1356,25 +1825,16 @@
                     player_number:
                       player.number,
 
-                    amount:
-                      amount,
+                    amount,
 
                     donor_name:
-                      generalAnonymous.checked
-                        ? "Anonymous"
-                        : (
-                            generalDonorName
-                              .value
-                              .trim()
-                            ||
-                            "Anonymous"
-                          ),
+                      name,
 
                     donor_email:
                       email,
 
                     anonymous:
-                      generalAnonymous.checked
+                      anonymous.checked
                   })
               }
             );
@@ -1384,7 +1844,7 @@
 
           if (
             !response.ok ||
-            !data.url
+            !data.success
           ) {
             throw new Error(
               data.error ||
@@ -1392,45 +1852,65 @@
             );
           }
 
+          if (!data.url) {
+            throw new Error(
+              "Checkout URL was not returned."
+            );
+          }
+
           window.location.href =
             data.url;
+
         } catch (error) {
           console.error(error);
 
-          setStatus(
-            generalStatus,
+          showNotice(
             error.message ||
-            "Donation checkout failed. Please try again.",
-            true
+            "Unable to start checkout. Please try again.",
+            "error"
           );
 
-          generalDonationButton.disabled =
-            false;
-
-          generalDonationButton.textContent =
-            "Make General Donation";
+          setLoading(
+            generalButton,
+            false,
+            "",
+            "Make General Donation"
+          );
         }
       }
     );
 
 
-    if (
-      params.get("payment") ===
-      "success"
-    ) {
-      setStatus(
-        ballStatus,
-        "Thank you! Your donation was successful."
+    const paymentStatus =
+      params.get(
+        "payment"
       );
 
-      setStatus(
-        generalStatus,
-        "Thank you! Your donation was successful."
+    if (
+      paymentStatus ===
+      "success"
+    ) {
+      showNotice(
+        "Thank you! Your payment was successful. Your support helps send South Florida Legacy to Pigeon Forge.",
+        "success"
+      );
+    }
+
+    if (
+      paymentStatus ===
+      "cancelled"
+    ) {
+      showNotice(
+        "Checkout was cancelled. Your baseball selections have not been charged.",
+        "info"
       );
     }
 
 
+    renderBalls();
+    updateSelection();
     loadFundraiser();
+
   </script>
 
 </body>

@@ -24,24 +24,20 @@ async function verifyStripeSignature(
     return false;
   }
 
-  const parts =
-    signature.split(",");
+  const parts = signature.split(",");
 
   const timestampPart =
     parts.find(
-      part =>
-        part.startsWith("t=")
+      part => part.startsWith("t=")
     );
 
   const signatureParts =
     parts
       .filter(
-        part =>
-          part.startsWith("v1=")
+        part => part.startsWith("v1=")
       )
       .map(
-        part =>
-          part.slice(3)
+        part => part.slice(3)
       );
 
   if (
@@ -97,8 +93,7 @@ async function verifyStripeSignature(
 
   return signatureParts.some(
     value =>
-      value ===
-      expectedSignature
+      value === expectedSignature
   );
 }
 
@@ -118,7 +113,6 @@ async function supabaseGet(
       `${env.SUPABASE_URL}/rest/v1/${path}`,
       {
         method: "GET",
-
         headers: {
           apikey:
             env.SUPABASE_SERVICE_ROLE_KEY,
@@ -157,7 +151,6 @@ async function supabaseInsert(
       `${env.SUPABASE_URL}/rest/v1/${table}`,
       {
         method: "POST",
-
         headers: {
           apikey:
             env.SUPABASE_SERVICE_ROLE_KEY,
@@ -202,7 +195,6 @@ async function supabasePatch(
       `${env.SUPABASE_URL}/rest/v1/${path}`,
       {
         method: "PATCH",
-
         headers: {
           apikey:
             env.SUPABASE_SERVICE_ROLE_KEY,
@@ -239,7 +231,7 @@ async function supabasePatch(
 
 /*
   -----------------------------------
-  PARSE BASEBALL NUMBERS
+  BASEBALL PARSER
   -----------------------------------
 */
 
@@ -258,9 +250,7 @@ function parseBaseballs(value) {
     )
     .filter(
       number =>
-        Number.isInteger(
-          number
-        ) &&
+        Number.isInteger(number) &&
         number >= 1 &&
         number <= 60
     );
@@ -269,7 +259,7 @@ function parseBaseballs(value) {
 
 /*
   -----------------------------------
-  HANDLE COMPLETED PAYMENT
+  PROCESS COMPLETED CHECKOUT
   -----------------------------------
 */
 
@@ -293,11 +283,20 @@ async function handleCheckoutCompleted(
     metadata.player_name || "";
 
   const playerNumber =
-    metadata.player_number || "";
+    Number(
+      metadata.player_number || 0
+    ) || null;
+
+  const anonymous =
+    metadata.anonymous === "true";
 
   const donorName =
-    metadata.donor_name ||
-    "Anonymous";
+    anonymous
+      ? "Anonymous"
+      : (
+          metadata.donor_name ||
+          "Anonymous"
+        );
 
   const donorEmail =
     metadata.donor_email ||
@@ -305,28 +304,30 @@ async function handleCheckoutCompleted(
     session.customer_email ||
     "";
 
-  const anonymous =
-    metadata.anonymous ===
-    "true";
-
-  const amountTotal =
+  const totalCents =
     Number(
       session.amount_total || 0
     );
 
   const amountDollars =
-    amountTotal / 100;
+    totalCents / 100;
+
+  const paymentIntentId =
+    typeof session.payment_intent === "string"
+      ? session.payment_intent
+      : (
+          session.payment_intent?.id ||
+          null
+        );
+
+  const paidAt =
+    new Date().toISOString();
 
 
   /*
     -----------------------------------
-    IDEMPOTENCY CHECK
-
-    Prevent duplicate processing if Stripe
-    sends the webhook more than once.
-
-    Expected orders column:
-    stripe_session_id
+    DUPLICATE WEBHOOK PROTECTION
+    -----------------------------------
   */
 
   const existingOrders =
@@ -342,11 +343,9 @@ async function handleCheckoutCompleted(
       ].join("")
     );
 
-  if (
-    existingOrders.length > 0
-  ) {
+  if (existingOrders.length) {
     console.log(
-      "Stripe session already processed:",
+      "Already processed:",
       session.id
     );
 
@@ -361,8 +360,7 @@ async function handleCheckoutCompleted(
   */
 
   if (
-    donationType ===
-    "baseballs"
+    donationType === "baseballs"
   ) {
     const baseballs =
       parseBaseballs(
@@ -371,23 +369,22 @@ async function handleCheckoutCompleted(
 
     if (
       !playerId ||
-      baseballs.length === 0
+      !baseballs.length
     ) {
       throw new Error(
-        "Missing player or baseball metadata."
+        "Missing baseball payment metadata."
       );
     }
 
-
     /*
-      DOUBLE-CHECK THAT NONE OF THESE
-      BASEBALLS ARE ALREADY SOLD
+      Confirm these rows actually exist
+      for this team/player.
     */
 
     const selectedList =
       baseballs.join(",");
 
-    const soldCheck =
+    const baseballRows =
       await supabaseGet(
         env,
         [
@@ -400,31 +397,38 @@ async function handleCheckoutCompleted(
             playerId
           )}`,
           `&ball_number=in.(${selectedList})`,
-          "&status=eq.sold",
         ].join("")
       );
 
-
-    /*
-      Normally this should never happen because
-      checkout validates availability first.
-
-      If a race condition happens, we still record
-      the paid order, but we log the conflict.
-    */
-
     if (
-      soldCheck.length > 0
+      baseballRows.length !==
+      baseballs.length
     ) {
+      throw new Error(
+        "One or more baseball records could not be found."
+      );
+    }
+
+    const alreadySold =
+      baseballRows.filter(
+        row =>
+          row.status === "sold"
+      );
+
+    if (alreadySold.length) {
       console.error(
-        "PAID BASEBALL CONFLICT:",
-        soldCheck
+        "PAID BALL CONFLICT:",
+        alreadySold
       );
     }
 
 
     /*
       RECORD ORDER
+
+      We populate both the older schema
+      columns and the newer fundraiser
+      columns that now exist.
     */
 
     await supabaseInsert(
@@ -444,9 +448,7 @@ async function handleCheckoutCompleted(
           playerName,
 
         player_number:
-          Number(
-            playerNumber
-          ) || null,
+          playerNumber,
 
         donation_type:
           "baseballs",
@@ -455,9 +457,7 @@ async function handleCheckoutCompleted(
           baseballs,
 
         donor_name:
-          anonymous
-            ? "Anonymous"
-            : donorName,
+          donorName,
 
         donor_email:
           donorEmail,
@@ -469,18 +469,32 @@ async function handleCheckoutCompleted(
           amountDollars,
 
         amount_cents:
-          amountTotal,
+          totalCents,
+
+        total_cents:
+          totalCents,
 
         stripe_session_id:
           session.id,
 
         stripe_payment_intent:
-          session.payment_intent ||
-          null,
+          paymentIntentId,
+
+        stripe_payment_intent_id:
+          paymentIntentId,
 
         payment_status:
           session.payment_status ||
           "paid",
+
+        status:
+          "paid",
+
+        customer_email:
+          donorEmail,
+
+        paid_at:
+          paidAt,
       }
     );
 
@@ -490,8 +504,7 @@ async function handleCheckoutCompleted(
     */
 
     for (
-      const ballNumber
-      of baseballs
+      const ballNumber of baseballs
     ) {
       const path =
         [
@@ -510,82 +523,38 @@ async function handleCheckoutCompleted(
           ),
         ].join("");
 
+      await supabasePatch(
+        env,
+        path,
+        {
+          status:
+            "sold",
 
-      const updated =
-        await supabasePatch(
-          env,
-          path,
-          {
-            status:
-              "sold",
+          donor_name:
+            donorName,
 
-            donor_name:
-              anonymous
-                ? "Anonymous"
-                : donorName,
+          donor_email:
+            donorEmail,
 
-            donor_email:
-              donorEmail,
+          stripe_session_id:
+            session.id,
 
-            stripe_session_id:
-              session.id,
+          sold_at:
+            paidAt,
 
-            sold_at:
-              new Date()
-                .toISOString(),
-          }
-        );
+          reserved_until:
+            null,
 
-
-      /*
-        If the baseball row does not exist yet,
-        create it.
-      */
-
-      if (
-        !updated ||
-        updated.length === 0
-      ) {
-        await supabaseInsert(
-          env,
-          "baseballs",
-          {
-            team_id:
-              env.TEAM_KEY,
-
-            player_id:
-              playerId,
-
-            ball_number:
-              ballNumber,
-
-            status:
-              "sold",
-
-            donor_name:
-              anonymous
-                ? "Anonymous"
-                : donorName,
-
-            donor_email:
-              donorEmail,
-
-            stripe_session_id:
-              session.id,
-
-            sold_at:
-              new Date()
-                .toISOString(),
-          }
-        );
-      }
+          reservation_id:
+            null,
+        }
+      );
     }
 
 
     console.log(
-      "Baseball donation processed:",
-      session.id,
-      baseballs
+      "Baseball order completed:",
+      session.id
     );
 
     return;
@@ -599,15 +568,13 @@ async function handleCheckoutCompleted(
   */
 
   if (
-    donationType ===
-    "general"
+    donationType === "general"
   ) {
     if (!playerId) {
       throw new Error(
-        "Missing player metadata for general donation."
+        "Missing player metadata."
       );
     }
-
 
     await supabaseInsert(
       env,
@@ -626,17 +593,16 @@ async function handleCheckoutCompleted(
           playerName,
 
         player_number:
-          Number(
-            playerNumber
-          ) || null,
+          playerNumber,
 
         donation_type:
           "general",
 
+        baseballs:
+          null,
+
         donor_name:
-          anonymous
-            ? "Anonymous"
-            : donorName,
+          donorName,
 
         donor_email:
           donorEmail,
@@ -648,24 +614,38 @@ async function handleCheckoutCompleted(
           amountDollars,
 
         amount_cents:
-          amountTotal,
+          totalCents,
+
+        total_cents:
+          totalCents,
 
         stripe_session_id:
           session.id,
 
         stripe_payment_intent:
-          session.payment_intent ||
-          null,
+          paymentIntentId,
+
+        stripe_payment_intent_id:
+          paymentIntentId,
 
         payment_status:
           session.payment_status ||
           "paid",
+
+        status:
+          "paid",
+
+        customer_email:
+          donorEmail,
+
+        paid_at:
+          paidAt,
       }
     );
 
 
     console.log(
-      "General donation processed:",
+      "General donation completed:",
       session.id
     );
 
@@ -674,7 +654,7 @@ async function handleCheckoutCompleted(
 
 
   console.log(
-    "Unknown donation type:",
+    "Ignored checkout with donation type:",
     donationType
   );
 }
@@ -682,7 +662,7 @@ async function handleCheckoutCompleted(
 
 /*
   -----------------------------------
-  STRIPE WEBHOOK ENDPOINT
+  WEBHOOK ENDPOINT
   -----------------------------------
 */
 
@@ -691,7 +671,6 @@ export async function onRequestPost({
   env,
 }) {
   try {
-
     if (
       !env.STRIPE_WEBHOOK_SECRET ||
       !env.SUPABASE_URL ||
@@ -708,11 +687,9 @@ export async function onRequestPost({
       );
     }
 
-
     /*
-      IMPORTANT:
-      Stripe signature verification requires
-      the ORIGINAL raw request body.
+      Stripe verification must use
+      the raw request body.
     */
 
     const payload =
@@ -723,54 +700,39 @@ export async function onRequestPost({
         "stripe-signature"
       );
 
-
-    const validSignature =
+    const valid =
       await verifyStripeSignature(
         payload,
         stripeSignature,
         env.STRIPE_WEBHOOK_SECRET
       );
 
-
-    if (!validSignature) {
-      console.error(
-        "Invalid Stripe webhook signature."
-      );
-
+    if (!valid) {
       return json(
         {
           success: false,
           error:
-            "Invalid signature.",
+            "Invalid Stripe signature.",
         },
         400
       );
     }
-
 
     let event;
 
     try {
       event =
-        JSON.parse(
-          payload
-        );
+        JSON.parse(payload);
     } catch {
       return json(
         {
           success: false,
           error:
-            "Invalid Stripe payload.",
+            "Invalid webhook payload.",
         },
         400
       );
     }
-
-
-    /*
-      WE ONLY NEED COMPLETED
-      CHECKOUT SESSIONS
-    */
 
     if (
       event.type ===
@@ -779,18 +741,11 @@ export async function onRequestPost({
       const session =
         event.data?.object;
 
-      if (
-        !session
-      ) {
+      if (!session) {
         throw new Error(
-          "Missing checkout session."
+          "Missing Stripe checkout session."
         );
       }
-
-
-      /*
-        Only process successful payments.
-      */
 
       if (
         session.payment_status ===
@@ -803,22 +758,15 @@ export async function onRequestPost({
       }
     }
 
-
-    /*
-      Stripe expects a fast 2xx response.
-    */
-
     return json({
       received: true,
     });
 
   } catch (error) {
-
     console.error(
       "STRIPE WEBHOOK ERROR:",
       error
     );
-
 
     return json(
       {

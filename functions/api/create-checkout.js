@@ -12,7 +12,6 @@ async function supabaseGet(env, path) {
   const response = await fetch(
     `${env.SUPABASE_URL}/rest/v1/${path}`,
     {
-      method: "GET",
       headers: {
         apikey: env.SUPABASE_SERVICE_ROLE_KEY,
         authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
@@ -32,119 +31,6 @@ async function supabaseGet(env, path) {
   return text ? JSON.parse(text) : [];
 }
 
-async function createStripeCheckout(env, params) {
-  const body = new URLSearchParams();
-
-  body.set("mode", "payment");
-  body.set("customer_email", params.donorEmail);
-  body.set("success_url", params.successUrl);
-  body.set("cancel_url", params.cancelUrl);
-
-  body.set("line_items[0][quantity]", "1");
-  body.set(
-    "line_items[0][price_data][currency]",
-    "usd"
-  );
-
-  body.set(
-    "line_items[0][price_data][unit_amount]",
-    String(params.amountCents)
-  );
-
-  body.set(
-    "line_items[0][price_data][product_data][name]",
-    `${params.playerName} - Road to Pigeon Forge`
-  );
-
-  body.set(
-    "line_items[0][price_data][product_data][description]",
-    `Baseballs: ${params.baseballs.join(", ")}`
-  );
-
-  body.set(
-    "metadata[donation_type]",
-    "baseballs"
-  );
-
-  body.set(
-    "metadata[team_key]",
-    env.TEAM_KEY
-  );
-
-  body.set(
-    "metadata[player_id]",
-    String(params.playerId)
-  );
-
-  body.set(
-    "metadata[player_slug]",
-    params.playerSlug
-  );
-
-  body.set(
-    "metadata[player_name]",
-    params.playerName
-  );
-
-  body.set(
-    "metadata[player_number]",
-    String(params.playerNumber)
-  );
-
-  body.set(
-    "metadata[baseballs]",
-    params.baseballs.join(",")
-  );
-
-  body.set(
-    "metadata[donor_name]",
-    params.donorName
-  );
-
-  body.set(
-    "metadata[donor_email]",
-    params.donorEmail
-  );
-
-  body.set(
-    "metadata[anonymous]",
-    params.anonymous ? "true" : "false"
-  );
-
-  const response = await fetch(
-    "https://api.stripe.com/v1/checkout/sessions",
-    {
-      method: "POST",
-      headers: {
-        authorization:
-          `Bearer ${env.STRIPE_SECRET_KEY}`,
-        "content-type":
-          "application/x-www-form-urlencoded",
-      },
-      body: body.toString(),
-    }
-  );
-
-  const text = await response.text();
-
-  let data;
-
-  try {
-    data = text ? JSON.parse(text) : {};
-  } catch {
-    data = {};
-  }
-
-  if (!response.ok) {
-    throw new Error(
-      data?.error?.message ||
-      "Unable to create Stripe checkout."
-    );
-  }
-
-  return data;
-}
-
 export async function onRequestPost({
   request,
   env,
@@ -153,93 +39,66 @@ export async function onRequestPost({
     if (
       !env.SUPABASE_URL ||
       !env.SUPABASE_SERVICE_ROLE_KEY ||
-      !env.TEAM_KEY ||
       !env.STRIPE_SECRET_KEY
     ) {
       return json(
         {
           success: false,
-          error:
-            "Missing required environment variables.",
+          error: "Missing required environment variables.",
         },
         500
       );
     }
 
-    let body;
+    const TEAM_KEY =
+      "legacy-pigeon-forge";
 
-    try {
-      body = await request.json();
-    } catch {
-      return json(
-        {
-          success: false,
-          error: "Invalid request body.",
-        },
-        400
-      );
-    }
+    const body =
+      await request.json();
 
     const playerSlug =
-      String(body.player_slug || "").trim();
+      String(
+        body.player_slug || ""
+      ).trim();
 
-    const donorEmail =
-      String(body.donor_email || "").trim();
+    const donorNameRaw =
+      String(
+        body.donor_name || ""
+      ).trim();
 
     const anonymous =
       body.anonymous === true;
 
     const donorName =
-      anonymous
+      anonymous || !donorNameRaw
         ? "Anonymous"
-        : (
-            String(body.donor_name || "").trim()
-            || "Anonymous"
-          );
+        : donorNameRaw;
+
+    const baseballs =
+      Array.from(
+        new Set(
+          Array.isArray(body.baseballs)
+            ? body.baseballs.map(Number)
+            : []
+        )
+      )
+        .filter(
+          (number) =>
+            Number.isInteger(number) &&
+            number >= 1 &&
+            number <= 60
+        )
+        .sort((a, b) => a - b);
 
     if (!playerSlug) {
       return json(
         {
           success: false,
-          error: "Missing player.",
+          error: "Player is required.",
         },
         400
       );
     }
-
-    if (!donorEmail) {
-      return json(
-        {
-          success: false,
-          error: "Email is required.",
-        },
-        400
-      );
-    }
-
-    if (!Array.isArray(body.baseballs)) {
-      return json(
-        {
-          success: false,
-          error:
-            "Please select at least one baseball.",
-        },
-        400
-      );
-    }
-
-    const baseballs = [
-      ...new Set(
-        body.baseballs
-          .map(Number)
-          .filter(
-            number =>
-              Number.isInteger(number) &&
-              number >= 1 &&
-              number <= 60
-          )
-      ),
-    ].sort((a, b) => a - b);
 
     if (!baseballs.length) {
       return json(
@@ -253,69 +112,54 @@ export async function onRequestPost({
     }
 
     /*
-      1. FIND TEAM BY team_key
+      Find team UUID.
     */
 
     const teams =
       await supabaseGet(
         env,
-        [
-          "teams",
-          "?select=id,team_key,team_name",
-          `&team_key=eq.${encodeURIComponent(
-            env.TEAM_KEY
-          )}`,
-          "&limit=1",
-        ].join("")
+        `teams?team_key=eq.${encodeURIComponent(
+          TEAM_KEY
+        )}&select=id,team_key,team_name&limit=1`
       );
 
     if (!teams.length) {
       return json(
         {
           success: false,
-          error: "Team not found.",
+          error:
+            "Pigeon Forge team not found.",
         },
         404
       );
     }
 
-    const team = teams[0];
+    const team =
+      teams[0];
 
     /*
-      2. FIND PLAYER BY TEAM UUID
+      Find player.
     */
 
     let players =
       await supabaseGet(
         env,
-        [
-          "players",
-          "?select=id,player_key,player_name,player_number,slug,name",
-          `&team_id=eq.${encodeURIComponent(
-            team.id
-          )}`,
-          `&slug=eq.${encodeURIComponent(
-            playerSlug
-          )}`,
-          "&limit=1",
-        ].join("")
+        `players?team_id=eq.${encodeURIComponent(
+          team.id
+        )}&slug=eq.${encodeURIComponent(
+          playerSlug
+        )}&select=id,slug,player_key,name,player_name,player_number&limit=1`
       );
 
     if (!players.length) {
       players =
         await supabaseGet(
           env,
-          [
-            "players",
-            "?select=id,player_key,player_name,player_number,slug,name",
-            `&team_id=eq.${encodeURIComponent(
-              team.id
-            )}`,
-            `&player_key=eq.${encodeURIComponent(
-              playerSlug
-            )}`,
-            "&limit=1",
-          ].join("")
+          `players?team_id=eq.${encodeURIComponent(
+            team.id
+          )}&player_key=eq.${encodeURIComponent(
+            playerSlug
+          )}&select=id,slug,player_key,name,player_name,player_number&limit=1`
         );
     }
 
@@ -323,163 +167,295 @@ export async function onRequestPost({
       return json(
         {
           success: false,
-          error: "Player not found.",
+          error:
+            "Player not found.",
         },
         404
       );
     }
 
-    const player = players[0];
+    const player =
+      players[0];
 
-    const resolvedName =
+    const playerName =
       player.player_name ||
       player.name ||
+      body.player_name ||
       "";
 
-    const resolvedSlug =
-      player.slug ||
-      player.player_key ||
-      playerSlug;
+    const playerNumber =
+      player.player_number ??
+      body.player_number ??
+      null;
 
     /*
-      3. CHECK IF ANY SELECTED BALLS
-         ARE ALREADY SOLD
-
-      baseballs.team_id is TEXT,
-      so we use TEAM_KEY here.
+      Make sure none of the selected
+      baseballs are already sold.
     */
 
-    const selectedList =
+    const selectedNumbers =
       baseballs.join(",");
 
-    const existing =
+    const unavailable =
       await supabaseGet(
         env,
-        [
-          "baseballs",
-          "?select=ball_number,status",
-          `&team_id=eq.${encodeURIComponent(
-            env.TEAM_KEY
-          )}`,
-          `&player_id=eq.${encodeURIComponent(
-            player.id
-          )}`,
-          `&ball_number=in.(${selectedList})`,
-          "&status=eq.sold",
-        ].join("")
+        `baseballs?team_id=eq.${encodeURIComponent(
+          TEAM_KEY
+        )}&player_id=eq.${encodeURIComponent(
+          player.id
+        )}&ball_number=in.(${selectedNumbers})&status=eq.sold&select=ball_number`
       );
 
-    if (existing.length > 0) {
-      const unavailable =
-        existing
-          .map(
-            row =>
-              Number(row.ball_number)
-          )
-          .filter(Number.isInteger)
-          .sort((a, b) => a - b);
-
+    if (unavailable.length) {
       return json(
         {
           success: false,
           error:
-            unavailable.length === 1
-              ? `Baseball #${unavailable[0]} was just sold. Please choose another baseball.`
-              : `Baseballs ${unavailable
-                  .map(number => `#${number}`)
-                  .join(", ")} are no longer available.`,
-          unavailableBalls: unavailable,
+            "One or more selected baseballs were already purchased.",
+          unavailableBalls:
+            unavailable.map(
+              (row) =>
+                Number(row.ball_number)
+            ),
         },
         409
       );
     }
 
     /*
-      4. CALCULATE TOTAL
-
-      Ball number = dollar amount
+      Ball number equals donation amount.
     */
 
-    const amountDollars =
+    const totalDollars =
       baseballs.reduce(
-        (total, number) =>
-          total + number,
+        (sum, number) =>
+          sum + number,
         0
       );
 
-    const amountCents =
-      amountDollars * 100;
-
-    /*
-      5. BUILD STRIPE RETURN URLS
-    */
+    const totalCents =
+      totalDollars * 100;
 
     const requestUrl =
       new URL(request.url);
 
-    const siteOrigin =
-      env.SITE_URL
-        ? String(env.SITE_URL).replace(
-            /\/+$/,
-            ""
-          )
-        : requestUrl.origin;
-
-    const successUrl =
-      `${siteOrigin}/fundraiser.html` +
-      `?player=${encodeURIComponent(
-        resolvedSlug
-      )}` +
-      `&payment=success` +
-      `&session_id={CHECKOUT_SESSION_ID}`;
-
-    const cancelUrl =
-      `${siteOrigin}/fundraiser.html` +
-      `?player=${encodeURIComponent(
-        resolvedSlug
-      )}` +
-      `&payment=cancelled`;
+    const siteUrl =
+      (
+        env.SITE_URL ||
+        requestUrl.origin
+      ).replace(/\/+$/, "");
 
     /*
-      6. CREATE STRIPE SESSION
+      Build Stripe Checkout Session.
     */
 
-    const session =
-      await createStripeCheckout(
-        env,
+    const stripeBody =
+      new URLSearchParams();
+
+    stripeBody.set(
+      "mode",
+      "payment"
+    );
+
+    stripeBody.set(
+      "success_url",
+      `${siteUrl}/fundraiser.html?player=${encodeURIComponent(
+        playerSlug
+      )}&payment=success&session_id={CHECKOUT_SESSION_ID}`
+    );
+
+    stripeBody.set(
+      "cancel_url",
+      `${siteUrl}/fundraiser.html?player=${encodeURIComponent(
+        playerSlug
+      )}&payment=cancelled`
+    );
+
+    stripeBody.set(
+      "line_items[0][quantity]",
+      "1"
+    );
+
+    stripeBody.set(
+      "line_items[0][price_data][currency]",
+      "usd"
+    );
+
+    stripeBody.set(
+      "line_items[0][price_data][unit_amount]",
+      String(totalCents)
+    );
+
+    stripeBody.set(
+      "line_items[0][price_data][product_data][name]",
+      `${playerName} - Road to Pigeon Forge`
+    );
+
+    stripeBody.set(
+      "line_items[0][price_data][product_data][description]",
+      `Baseballs: ${baseballs.join(", ")}`
+    );
+
+    /*
+      Stripe metadata used by webhook.
+    */
+
+    stripeBody.set(
+      "metadata[donation_type]",
+      "baseballs"
+    );
+
+    stripeBody.set(
+      "metadata[team_key]",
+      TEAM_KEY
+    );
+
+    stripeBody.set(
+      "metadata[player_id]",
+      String(player.id)
+    );
+
+    stripeBody.set(
+      "metadata[player_slug]",
+      playerSlug
+    );
+
+    stripeBody.set(
+      "metadata[player_name]",
+      playerName
+    );
+
+    stripeBody.set(
+      "metadata[player_number]",
+      String(
+        playerNumber ?? ""
+      )
+    );
+
+    stripeBody.set(
+      "metadata[baseballs]",
+      baseballs.join(",")
+    );
+
+    stripeBody.set(
+      "metadata[donor_name]",
+      donorName
+    );
+
+    stripeBody.set(
+      "metadata[anonymous]",
+      anonymous ||
+      donorName === "Anonymous"
+        ? "true"
+        : "false"
+    );
+
+    stripeBody.set(
+      "metadata[amount_dollars]",
+      String(totalDollars)
+    );
+
+    stripeBody.set(
+      "metadata[amount_cents]",
+      String(totalCents)
+    );
+
+    /*
+      Also attach useful metadata to the
+      PaymentIntent itself.
+    */
+
+    stripeBody.set(
+      "payment_intent_data[metadata][donation_type]",
+      "baseballs"
+    );
+
+    stripeBody.set(
+      "payment_intent_data[metadata][team_key]",
+      TEAM_KEY
+    );
+
+    stripeBody.set(
+      "payment_intent_data[metadata][player_slug]",
+      playerSlug
+    );
+
+    stripeBody.set(
+      "payment_intent_data[metadata][player_name]",
+      playerName
+    );
+
+    stripeBody.set(
+      "payment_intent_data[metadata][baseballs]",
+      baseballs.join(",")
+    );
+
+    stripeBody.set(
+      "payment_intent_data[metadata][donor_name]",
+      donorName
+    );
+
+    const stripeResponse =
+      await fetch(
+        "https://api.stripe.com/v1/checkout/sessions",
         {
-          playerId: player.id,
-          playerSlug: resolvedSlug,
-          playerName: resolvedName,
-          playerNumber:
-            player.player_number,
-          baseballs,
-          donorName,
-          donorEmail,
-          anonymous,
-          amountCents,
-          successUrl,
-          cancelUrl,
+          method: "POST",
+
+          headers: {
+            authorization:
+              `Bearer ${env.STRIPE_SECRET_KEY}`,
+
+            "content-type":
+              "application/x-www-form-urlencoded",
+          },
+
+          body:
+            stripeBody.toString(),
         }
       );
 
-    if (!session.url) {
-      throw new Error(
-        "Stripe did not return a checkout URL."
+    const stripeData =
+      await stripeResponse.json();
+
+    if (!stripeResponse.ok) {
+      console.error(
+        "Stripe error:",
+        stripeData
+      );
+
+      return json(
+        {
+          success: false,
+          error:
+            stripeData?.error?.message ||
+            "Unable to create Stripe checkout.",
+        },
+        stripeResponse.status
+      );
+    }
+
+    if (!stripeData.url) {
+      return json(
+        {
+          success: false,
+          error:
+            "Stripe did not return a checkout URL.",
+        },
+        500
       );
     }
 
     return json({
       success: true,
-      url: session.url,
-      sessionId: session.id,
+      url: stripeData.url,
+      session_id: stripeData.id,
+      total: totalDollars,
       baseballs,
-      amount: amountDollars,
     });
 
   } catch (error) {
     console.error(
-      "CREATE CHECKOUT ERROR:",
+      "create-checkout error:",
       error
     );
 

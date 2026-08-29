@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
 
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
-  >
+  />
 
   <title>
     South Florida Legacy | Road to Pigeon Forge
@@ -15,31 +15,40 @@
   <meta
     name="description"
     content="Support South Florida Legacy Baseball on the Road to Pigeon Forge and the Ripken Experience in Tennessee."
-  >
+  />
+
+  <meta name="theme-color" content="#050608" />
 
   <style>
     :root {
-      --blue: #00AEEF;
-      --pink: #EC008C;
-      --black: #000000;
-      --white: #FFFFFF;
-      --gray: #B8B8B8;
+      --blue: #00aeef;
+      --blue-light: #53d3ff;
+      --pink: #ec008c;
+      --pink-light: #ff4db2;
+      --black: #050608;
+      --black-2: #0a0b0e;
+      --charcoal: #111318;
+      --charcoal-2: #181b21;
+      --white: #ffffff;
+      --muted: #aeb2bb;
+      --line: rgba(255, 255, 255, 0.11);
     }
 
     * {
       box-sizing: border-box;
     }
 
-    html,
-    body {
-      margin: 0;
-      min-height: 100%;
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
+      margin: 0;
       min-height: 100vh;
+      overflow-x: hidden;
 
       font-family:
+        Inter,
         Arial,
         Helvetica,
         sans-serif;
@@ -48,708 +57,1743 @@
 
       background:
         radial-gradient(
-          circle at 20% 0%,
-          rgba(0, 174, 239, 0.20),
-          transparent 34%
+          circle at 12% 5%,
+          rgba(0, 174, 239, 0.18),
+          transparent 28%
         ),
         radial-gradient(
-          circle at 85% 20%,
-          rgba(236, 0, 140, 0.16),
-          transparent 30%
+          circle at 86% 4%,
+          rgba(236, 0, 140, 0.17),
+          transparent 28%
         ),
         linear-gradient(
           180deg,
-          #000000 0%,
-          #0B0B0B 55%,
-          #000000 100%
+          #08090b 0%,
+          #0c0e12 42%,
+          #060709 100%
         );
     }
 
-    .page {
-      width: 100%;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding:
-        22px
-        16px
-        50px;
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -4;
+      pointer-events: none;
+
+      background:
+        repeating-radial-gradient(
+          ellipse at center,
+          transparent 0,
+          transparent 24px,
+          rgba(255, 255, 255, 0.012) 25px,
+          rgba(255, 255, 255, 0.012) 26px
+        );
+
+      opacity: 0.65;
     }
 
-    .hero {
-      text-align: center;
-      padding:
-        12px
-        10px
-        25px;
+    body::after {
+      content: "";
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 42vh;
+      z-index: -3;
+      pointer-events: none;
+
+      background:
+        linear-gradient(
+          165deg,
+          transparent 0 26%,
+          rgba(0, 174, 239, 0.05) 27% 28%,
+          transparent 29% 100%
+        ),
+        linear-gradient(
+          195deg,
+          transparent 0 35%,
+          rgba(236, 0, 140, 0.045) 36% 37%,
+          transparent 38% 100%
+        );
     }
 
-    .logo {
+    img {
+      max-width: 100%;
       display: block;
-      width: min(720px, 95%);
-      height: auto;
-      margin:
-        0
-        auto
-        18px;
     }
 
-    .road-to {
-      margin-bottom: 5px;
-
-      color: var(--white);
-
-      font-size: 16px;
-      font-weight: 900;
-
-      letter-spacing: 0.25em;
-
-      text-transform: uppercase;
+    a {
+      color: inherit;
     }
 
-    h1 {
-      margin: 0;
-
-      font-size:
-        clamp(
-          42px,
-          8vw,
-          78px
-        );
-
-      line-height: 0.96;
-
-      letter-spacing: -0.045em;
-
-      text-transform: uppercase;
+    button,
+    input,
+    a {
+      -webkit-tap-highlight-color: transparent;
     }
 
-    .pigeon {
-      color: var(--blue);
+    .site-shell {
+      width: min(1180px, calc(100% - 28px));
+      margin: 0 auto;
     }
 
-    .forge {
-      color: var(--pink);
-    }
-
-    .subtitle {
-      width: 100%;
-      max-width: 720px;
-
-      margin:
-        18px
-        auto
-        0;
-
-      color: #D3D3D3;
-
-      font-size: 17px;
-      line-height: 1.6;
-    }
-
-    .tournament {
-      display: inline-block;
-
-      margin-top: 17px;
-
-      padding:
-        9px
-        16px;
-
-      border:
-        1px solid
-        rgba(0, 174, 239, 0.38);
-
-      border-radius: 999px;
+    .neon-strip {
+      height: 5px;
 
       background:
-        rgba(0, 174, 239, 0.07);
-
-      color: var(--white);
-
-      font-size: 13px;
-      font-weight: 800;
-
-      letter-spacing: 0.06em;
-
-      text-transform: uppercase;
-    }
-
-    .card {
-      overflow: hidden;
-
-      margin:
-        18px
-        auto
-        0;
-
-      border:
-        1px solid
-        rgba(0, 174, 239, 0.30);
-
-      border-radius: 24px;
-
-      background:
-        rgba(
-          16,
-          16,
-          16,
-          0.96
+        linear-gradient(
+          90deg,
+          var(--blue),
+          var(--pink),
+          var(--blue)
         );
 
       box-shadow:
-        0
-        22px
-        70px
-        rgba(
-          0,
-          0,
-          0,
-          0.45
+        0 0 18px rgba(0, 174, 239, 0.75),
+        0 0 30px rgba(236, 0, 140, 0.4);
+    }
+
+    .nav {
+      padding: 22px 0 10px;
+    }
+
+    .nav-inner {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .legacy-logo {
+      width: min(700px, 92%);
+      filter:
+        drop-shadow(
+          0 0 20px rgba(0, 174, 239, 0.16)
         );
     }
 
-    .card-header {
-      padding: 25px 22px;
+    .hero {
+      padding: 18px 0 46px;
+    }
+
+    .hero-panel {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+
+      border:
+        1px solid rgba(255, 255, 255, 0.12);
+
+      border-radius: 34px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.06),
+          rgba(255, 255, 255, 0.018)
+        );
+
+      box-shadow:
+        0 35px 100px rgba(0, 0, 0, 0.62),
+        inset 0 1px 0 rgba(255, 255, 255, 0.055);
+    }
+
+    .hero-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -3;
+
+      background:
+        radial-gradient(
+          circle at 14% 20%,
+          rgba(0, 174, 239, 0.2),
+          transparent 30%
+        ),
+        radial-gradient(
+          circle at 80% 20%,
+          rgba(236, 0, 140, 0.15),
+          transparent 28%
+        ),
+        radial-gradient(
+          circle at 55% 95%,
+          rgba(0, 174, 239, 0.07),
+          transparent 35%
+        );
+    }
+
+    .hero-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      pointer-events: none;
+
+      background:
+        linear-gradient(
+          165deg,
+          transparent 0 64%,
+          rgba(0, 174, 239, 0.055) 65% 65.5%,
+          transparent 66% 100%
+        ),
+        linear-gradient(
+          195deg,
+          transparent 0 66%,
+          rgba(236, 0, 140, 0.05) 67% 67.5%,
+          transparent 68% 100%
+        );
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns:
+        minmax(0, 1.15fr)
+        minmax(300px, 0.75fr);
+
+      gap: 32px;
+      align-items: center;
+
+      padding: 56px;
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+
+      margin-bottom: 16px;
+
+      color: var(--blue-light);
+
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 3.2px;
+      text-transform: uppercase;
+    }
+
+    .kicker::before {
+      content: "";
+      width: 32px;
+      height: 3px;
+
+      background: var(--pink);
+
+      box-shadow:
+        0 0 15px rgba(236, 0, 140, 0.75);
+    }
+
+    .hero-title {
+      margin: 0;
+
+      font-size:
+        clamp(54px, 8.2vw, 108px);
+
+      line-height: 0.83;
+
+      letter-spacing: -5px;
+
+      text-transform: uppercase;
+
+      font-weight: 950;
+    }
+
+    .hero-title .road {
+      display: block;
+      color: white;
+    }
+
+    .hero-title .pigeon {
+      display: block;
+
+      margin-top: 10px;
+
+      background:
+        linear-gradient(
+          90deg,
+          var(--blue) 0%,
+          var(--blue-light) 34%,
+          var(--pink) 72%,
+          var(--pink-light) 100%
+        );
+
+      -webkit-background-clip: text;
+      background-clip: text;
+
+      color: transparent;
+
+      filter:
+        drop-shadow(
+          0 0 20px rgba(0, 174, 239, 0.12)
+        );
+    }
+
+    .hero-copy {
+      max-width: 670px;
+
+      margin: 25px 0 0;
+
+      color: #c7cad0;
+
+      font-size: 18px;
+      line-height: 1.67;
+    }
+
+    .hero-copy strong {
+      color: white;
+    }
+
+    .hero-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+
+      margin-top: 28px;
+    }
+
+    .primary-btn,
+    .secondary-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      min-height: 50px;
+
+      padding: 0 21px;
+
+      border-radius: 12px;
+
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-decoration: none;
+
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+    }
+
+    .primary-btn {
+      color: #fff;
+
+      background:
+        linear-gradient(
+          115deg,
+          var(--blue),
+          var(--pink)
+        );
+
+      box-shadow:
+        0 12px 28px rgba(0, 174, 239, 0.18),
+        0 0 26px rgba(236, 0, 140, 0.12);
+    }
+
+    .secondary-btn {
+      border:
+        1px solid rgba(255, 255, 255, 0.14);
+
+      background:
+        rgba(255, 255, 255, 0.035);
+
+      color: white;
+    }
+
+    .primary-btn:hover,
+    .secondary-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .primary-btn:hover {
+      box-shadow:
+        0 15px 32px rgba(0, 174, 239, 0.23),
+        0 0 34px rgba(236, 0, 140, 0.17);
+    }
+
+    .secondary-btn:hover {
+      border-color:
+        rgba(0, 174, 239, 0.5);
+    }
+
+    .hero-badge-area {
+      position: relative;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      min-height: 420px;
+    }
+
+    .hero-badge-area::before {
+      content: "";
+      position: absolute;
+
+      width: 370px;
+      height: 370px;
+
+      border-radius: 50%;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(0, 174, 239, 0.23),
+          rgba(236, 0, 140, 0.1) 40%,
+          transparent 69%
+        );
+
+      filter: blur(7px);
+    }
+
+    .hero-badge-area::after {
+      content: "";
+      position: absolute;
+
+      width: 270px;
+      height: 270px;
+
+      border:
+        1px solid rgba(255, 255, 255, 0.07);
+
+      border-radius: 50%;
+
+      box-shadow:
+        0 0 0 22px rgba(255, 255, 255, 0.015),
+        0 0 0 48px rgba(255, 255, 255, 0.01);
+    }
+
+    .ripken-logo {
+      position: relative;
+      z-index: 2;
+
+      width: min(350px, 88%);
+
+      filter:
+        drop-shadow(
+          0 24px 30px rgba(0, 0, 0, 0.65)
+        );
+    }
+
+    .stat-bar {
+      display: grid;
+      grid-template-columns:
+        repeat(4, 1fr);
+
+      border-top:
+        1px solid rgba(255, 255, 255, 0.09);
+
+      background:
+        rgba(0, 0, 0, 0.24);
+    }
+
+    .stat {
+      position: relative;
+
+      padding: 22px 18px;
 
       text-align: center;
+    }
 
-      border-bottom:
-        1px solid
-        rgba(
-          255,
-          255,
-          255,
-          0.08
-        );
+    .stat:not(:last-child)::after {
+      content: "";
+      position: absolute;
+
+      top: 22%;
+      right: 0;
+      bottom: 22%;
+
+      width: 1px;
+
+      background:
+        rgba(255, 255, 255, 0.08);
+    }
+
+    .stat strong {
+      display: block;
+
+      margin-bottom: 4px;
+
+      font-size: 24px;
+      font-weight: 950;
+    }
+
+    .stat span {
+      color: #8e939d;
+
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+    }
+
+    .mission {
+      padding: 18px 0 32px;
+    }
+
+    .mission-card {
+      position: relative;
+      overflow: hidden;
+
+      padding: 36px;
+
+      border-radius: 24px;
+
+      border:
+        1px solid rgba(255, 255, 255, 0.1);
 
       background:
         linear-gradient(
           135deg,
-          rgba(
-            0,
-            174,
-            239,
-            0.14
-          ),
-          rgba(
-            236,
-            0,
-            140,
-            0.10
-          )
+          rgba(0, 174, 239, 0.08),
+          rgba(236, 0, 140, 0.06)
         );
     }
 
-    .card-header h2 {
-      margin:
-        0
-        0
-        8px;
+    .mission-card::before {
+      content: "";
+      position: absolute;
+      left: -40px;
+      bottom: -100px;
 
-      font-size: 28px;
+      width: 300px;
+      height: 230px;
+
+      background:
+        linear-gradient(
+          145deg,
+          transparent 0 30%,
+          rgba(0, 174, 239, 0.09) 31% 55%,
+          transparent 56% 100%
+        );
+
+      transform: rotate(-7deg);
+    }
+
+    .mission-card::after {
+      content: "";
+      position: absolute;
+      right: -55px;
+      bottom: -100px;
+
+      width: 300px;
+      height: 230px;
+
+      background:
+        linear-gradient(
+          215deg,
+          transparent 0 30%,
+          rgba(236, 0, 140, 0.08) 31% 55%,
+          transparent 56% 100%
+        );
+
+      transform: rotate(8deg);
+    }
+
+    .mission-inner {
+      position: relative;
+      z-index: 2;
+
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+
+      gap: 38px;
+      align-items: center;
+    }
+
+    .mission-big {
+      font-size:
+        clamp(34px, 5vw, 64px);
+
+      line-height: 0.95;
+
+      font-weight: 950;
 
       text-transform: uppercase;
     }
 
-    .card-header p {
-      max-width: 650px;
+    .mission-big span {
+      display: block;
 
-      margin: 0 auto;
-
-      color: var(--gray);
-
-      font-size: 15px;
-      line-height: 1.55;
+      color: var(--pink);
     }
 
-    .players {
+    .mission-copy {
+      color: #c3c6cd;
+
+      font-size: 16px;
+      line-height: 1.65;
+    }
+
+    .players-section {
+      padding: 44px 0 54px;
+    }
+
+    .section-heading {
+      text-align: center;
+
+      margin-bottom: 30px;
+    }
+
+    .section-label {
+      color: var(--pink);
+
+      font-size: 11px;
+      font-weight: 950;
+
+      letter-spacing: 3px;
+
+      text-transform: uppercase;
+
+      margin-bottom: 10px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+
+      font-size:
+        clamp(34px, 5vw, 58px);
+
+      line-height: 0.95;
+
+      text-transform: uppercase;
+    }
+
+    .section-heading p {
+      max-width: 720px;
+
+      margin: 14px auto 0;
+
+      color: #aeb2bb;
+
+      line-height: 1.6;
+    }
+
+    .players-grid {
       display: grid;
 
       grid-template-columns:
-        repeat(
-          3,
-          minmax(
-            0,
-            1fr
-          )
-        );
+        repeat(4, minmax(0, 1fr));
 
       gap: 14px;
-
-      padding: 22px;
     }
 
-    .player {
+    .player-card {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+
       display: block;
 
-      padding:
-        20px
-        15px;
+      min-height: 166px;
+
+      padding: 22px 20px;
+
+      border-radius: 19px;
 
       border:
-        1px solid
-        #292929;
+        1px solid rgba(255, 255, 255, 0.1);
 
-      border-radius: 16px;
-
-      background:
-        #080808;
-
-      color: var(--white);
-
-      text-align: center;
       text-decoration: none;
 
-      transition:
-        transform
-        0.16s
-        ease,
-        border-color
-        0.16s
-        ease,
-        box-shadow
-        0.16s
-        ease;
-    }
-
-    .player:hover {
-      transform:
-        translateY(-3px);
-
-      border-color:
-        var(--blue);
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.055),
+          rgba(255, 255, 255, 0.018)
+        );
 
       box-shadow:
-        0
-        8px
-        25px
-        rgba(
-          0,
-          174,
-          239,
-          0.12
+        inset 0 1px 0 rgba(255, 255, 255, 0.025);
+
+      transition:
+        transform 0.18s ease,
+        border-color 0.18s ease,
+        box-shadow 0.18s ease;
+    }
+
+    .player-card::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+
+      top: 0;
+      left: 0;
+      right: 0;
+
+      height: 4px;
+
+      background:
+        linear-gradient(
+          90deg,
+          var(--blue),
+          var(--pink)
         );
     }
 
-    .number {
-      display: block;
+    .player-card::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
 
-      margin-bottom: 5px;
+      right: -65px;
+      bottom: -65px;
 
+      width: 150px;
+      height: 150px;
+
+      border-radius: 50%;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(0, 174, 239, 0.16),
+          transparent 67%
+        );
+
+      transition:
+        transform 0.2s ease;
+    }
+
+    .player-card:hover {
+      transform: translateY(-6px);
+
+      border-color:
+        rgba(0, 174, 239, 0.52);
+
+      box-shadow:
+        0 18px 45px rgba(0, 0, 0, 0.36),
+        0 0 22px rgba(0, 174, 239, 0.08);
+    }
+
+    .player-card:hover::after {
+      transform: scale(1.45);
+    }
+
+    .player-number {
       color: var(--pink);
 
-      font-size: 26px;
-      font-weight: 900;
+      font-size: 14px;
+      font-weight: 950;
+
+      letter-spacing: 2px;
     }
 
-    .name {
-      display: block;
+    .player-name {
+      max-width: 90%;
 
-      font-size: 17px;
-      font-weight: 900;
+      margin-top: 8px;
+
+      font-size: 21px;
+      font-weight: 950;
+
+      line-height: 1.13;
     }
 
-    .support {
+    .support-link {
+      position: absolute;
+
+      left: 20px;
+      bottom: 18px;
+
+      color: var(--blue-light);
+
+      font-size: 10px;
+      font-weight: 950;
+
+      letter-spacing: 1.4px;
+
+      text-transform: uppercase;
+    }
+
+    .support-link span {
+      color: var(--pink);
+    }
+
+    .how-section {
+      padding: 10px 0 54px;
+    }
+
+    .how-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 15px;
+    }
+
+    .how-card {
+      position: relative;
+      overflow: hidden;
+
+      min-height: 210px;
+
+      padding: 28px;
+
+      border-radius: 21px;
+
+      border:
+        1px solid rgba(255, 255, 255, 0.1);
+
+      background:
+        rgba(255, 255, 255, 0.026);
+    }
+
+    .how-card::after {
+      content: "";
+      position: absolute;
+
+      right: -65px;
+      top: -65px;
+
+      width: 170px;
+      height: 170px;
+
+      border-radius: 50%;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(236, 0, 140, 0.12),
+          transparent 68%
+        );
+    }
+
+    .how-number {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 44px;
+      height: 44px;
+
+      margin-bottom: 20px;
+
+      border-radius: 50%;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--blue),
+          var(--pink)
+        );
+
+      font-weight: 950;
+
+      box-shadow:
+        0 0 22px rgba(0, 174, 239, 0.15);
+    }
+
+    .how-card h3 {
+      margin: 0 0 10px;
+
+      font-size: 20px;
+    }
+
+    .how-card p {
+      margin: 0;
+
+      color: #aeb2bb;
+
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .final-cta {
+      padding: 8px 0 56px;
+    }
+
+    .final-panel {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+
+      padding: 50px 30px;
+
+      text-align: center;
+
+      border-radius: 28px;
+
+      border:
+        1px solid rgba(255, 255, 255, 0.11);
+
+      background:
+        linear-gradient(
+          130deg,
+          rgba(0, 174, 239, 0.14),
+          rgba(236, 0, 140, 0.13)
+        );
+    }
+
+    .final-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+
+      background:
+        radial-gradient(
+          circle at 20% 50%,
+          rgba(0, 174, 239, 0.16),
+          transparent 30%
+        ),
+        radial-gradient(
+          circle at 80% 50%,
+          rgba(236, 0, 140, 0.14),
+          transparent 30%
+        );
+    }
+
+    .final-panel h2 {
+      margin: 0;
+
+      font-size:
+        clamp(35px, 5.5vw, 66px);
+
+      line-height: 0.95;
+
+      text-transform: uppercase;
+    }
+
+    .final-panel h2 span {
       display: block;
 
       margin-top: 7px;
 
-      color: #858585;
-
-      font-size: 12px;
-
-      text-transform: uppercase;
-
-      letter-spacing: 0.08em;
+      color: var(--blue-light);
     }
 
-    .footer {
-      padding:
-        34px
-        10px
-        0;
+    .final-panel p {
+      max-width: 680px;
 
-      color: #777777;
+      margin: 16px auto 0;
+
+      color: #d4d6db;
+
+      line-height: 1.65;
+    }
+
+    .final-panel .primary-btn {
+      margin-top: 24px;
+    }
+
+    footer {
+      padding: 0 0 38px;
 
       text-align: center;
 
-      font-size: 13px;
-      line-height: 1.7;
+      color: #707680;
+
+      font-size: 11px;
+
+      letter-spacing: 1px;
+
+      text-transform: uppercase;
     }
 
-    .footer strong {
-      color: var(--blue);
+    .footer-line {
+      height: 1px;
+
+      margin-bottom: 24px;
+
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(0, 174, 239, 0.38),
+          rgba(236, 0, 140, 0.38),
+          transparent
+        );
     }
 
-    .footer .pink {
-      color: var(--pink);
-    }
+    @media (max-width: 980px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
 
-    @media (
-      max-width: 760px
-    ) {
+        padding: 44px 34px;
+      }
 
-      .players {
+      .hero-badge-area {
+        min-height: 300px;
+      }
+
+      .ripken-logo {
+        width: 300px;
+      }
+
+      .players-grid {
         grid-template-columns:
-          repeat(
-            2,
-            minmax(
-              0,
-              1fr
-            )
+          repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 760px) {
+      .site-shell {
+        width:
+          min(
+            100% - 20px,
+            1180px
           );
       }
 
-    }
-
-    @media (
-      max-width: 480px
-    ) {
-
-      .page {
-        padding:
-          12px
-          10px
-          40px;
-      }
-
-      .logo {
-        width: 98%;
+      .nav {
+        padding-top: 18px;
       }
 
       .hero {
         padding-top: 8px;
       }
 
-      .players {
-        gap: 10px;
-        padding: 14px;
+      .hero-panel {
+        border-radius: 24px;
       }
 
-      .player {
+      .hero-grid {
+        padding: 32px 20px;
+
+        gap: 6px;
+      }
+
+      .hero-title {
+        font-size:
+          clamp(
+            48px,
+            15vw,
+            82px
+          );
+
+        letter-spacing: -3px;
+      }
+
+      .hero-copy {
+        font-size: 16px;
+      }
+
+      .hero-badge-area {
+        min-height: 250px;
+      }
+
+      .ripken-logo {
+        width: 235px;
+      }
+
+      .stat-bar {
+        grid-template-columns:
+          repeat(2, 1fr);
+      }
+
+      .stat:nth-child(2)::after {
+        display: none;
+      }
+
+      .stat:nth-child(1),
+      .stat:nth-child(2) {
+        border-bottom:
+          1px solid rgba(
+            255,
+            255,
+            255,
+            0.07
+          );
+      }
+
+      .mission-card {
+        padding: 27px 22px;
+      }
+
+      .mission-inner {
+        grid-template-columns: 1fr;
+
+        gap: 18px;
+      }
+
+      .players-grid {
+        grid-template-columns:
+          repeat(2, 1fr);
+      }
+
+      .how-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 470px) {
+      .hero-grid {
         padding:
+          29px
           17px
-          8px;
+          24px;
       }
 
-      .number {
-        font-size: 23px;
+      .kicker {
+        letter-spacing: 2.2px;
+        font-size: 10px;
       }
 
-      .name {
-        font-size: 15px;
+      .hero-buttons {
+        display: grid;
+        grid-template-columns: 1fr;
       }
 
-      .card {
-        border-radius: 18px;
+      .primary-btn,
+      .secondary-btn {
+        width: 100%;
       }
 
+      .players-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .player-card {
+        min-height: 140px;
+      }
+
+      .final-panel {
+        padding:
+          40px
+          18px;
+      }
     }
   </style>
 </head>
 
 <body>
 
-  <main class="page">
+  <div class="neon-strip"></div>
+
+
+  <nav class="nav">
+    <div class="site-shell">
+
+      <div class="nav-inner">
+
+        <img
+          class="legacy-logo"
+          src="/legacy-logo.png"
+          alt="South Florida Legacy Baseball"
+        />
+
+      </div>
+
+    </div>
+  </nav>
+
+
+  <main>
+
+
+    <!-- HERO -->
 
     <section class="hero">
 
-      <img
-        src="/legacy-logo.png"
-        alt="South Florida Legacy Baseball"
-        class="logo"
-      >
+      <div class="site-shell">
 
-      <div class="road-to">
-        Road to
-      </div>
+        <div class="hero-panel">
 
-      <h1>
-        <span class="pigeon">
-          Pigeon
-        </span>
+          <div class="hero-grid">
 
-        <span class="forge">
-          Forge
-        </span>
-      </h1>
+            <div>
 
-      <p class="subtitle">
-        Help support South Florida Legacy Baseball
-        on our journey to Pigeon Forge, Tennessee.
-        Choose a player below to visit their
-        individual fundraiser.
-      </p>
+              <div class="kicker">
+                South Florida Legacy Baseball
+              </div>
 
-      <div class="tournament">
-        Ripken Experience • Pigeon Forge, Tennessee
-      </div>
+              <h1 class="hero-title">
 
-    </section>
+                <span class="road">
+                  Road To
+                </span>
+
+                <span class="pigeon">
+                  Pigeon Forge
+                </span>
+
+              </h1>
 
 
-    <section class="card">
+              <p class="hero-copy">
 
-      <div class="card-header">
+                Our Legacy family is headed to
+                <strong>
+                  Pigeon Forge, Tennessee
+                </strong>
+                for the
+                <strong>
+                  Ripken Experience.
+                </strong>
 
-        <h2>
-          Choose a Player
-        </h2>
+                Help our players make the trip,
+                compete, create memories and
+                represent South Florida Legacy
+                on one of youth baseball's
+                biggest stages.
 
-        <p>
-          Each player has 60 baseballs available.
-          Choose a baseball number and donate that
-          dollar amount, or make a general donation
-          directly to the player.
-        </p>
-
-      </div>
-
-
-      <div class="players">
-
-        <a
-          class="player"
-          href="/fundraiser.html?player=chafie-fields"
-        >
-          <span class="number">
-            #2
-          </span>
-
-          <span class="name">
-            Chafie Fields
-          </span>
-
-          <span class="support">
-            Support Chafie
-          </span>
-        </a>
+              </p>
 
 
-        <a
-          class="player"
-          href="/fundraiser.html?player=anthony-raia"
-        >
-          <span class="number">
-            #3
-          </span>
+              <div class="hero-buttons">
 
-          <span class="name">
-            Anthony Raia
-          </span>
+                <a
+                  class="primary-btn"
+                  href="#players"
+                >
+                  Choose A Player
+                </a>
 
-          <span class="support">
-            Support Anthony
-          </span>
-        </a>
+                <a
+                  class="secondary-btn"
+                  href="#how-it-works"
+                >
+                  How It Works
+                </a>
 
+              </div>
 
-        <a
-          class="player"
-          href="/fundraiser.html?player=kyrie-rivera"
-        >
-          <span class="number">
-            #5
-          </span>
-
-          <span class="name">
-            Kyrie Rivera
-          </span>
-
-          <span class="support">
-            Support Kyrie
-          </span>
-        </a>
+            </div>
 
 
-        <a
-          class="player"
-          href="/fundraiser.html?player=jack-lieberman"
-        >
-          <span class="number">
-            #7
-          </span>
+            <div class="hero-badge-area">
 
-          <span class="name">
-            Jack Lieberman
-          </span>
+              <img
+                class="ripken-logo"
+                src="/ripken-pigeon-forge.webp"
+                alt="Ripken Experience Pigeon Forge"
+              />
 
-          <span class="support">
-            Support Jack
-          </span>
-        </a>
+            </div>
+
+          </div>
 
 
-        <a
-          class="player"
-          href="/fundraiser.html?player=aaron-reynoso"
-        >
-          <span class="number">
-            #12
-          </span>
+          <div class="stat-bar">
 
-          <span class="name">
-            Aaron Reynoso
-          </span>
+            <div class="stat">
+              <strong>12</strong>
+              <span>Legacy Players</span>
+            </div>
 
-          <span class="support">
-            Support Aaron
-          </span>
-        </a>
+            <div class="stat">
+              <strong>60</strong>
+              <span>Balls Per Player</span>
+            </div>
 
+            <div class="stat">
+              <strong>$1–$60</strong>
+              <span>Donation Values</span>
+            </div>
 
-        <a
-          class="player"
-          href="/fundraiser.html?player=brody-griffin"
-        >
-          <span class="number">
-            #17
-          </span>
+            <div class="stat">
+              <strong>TN</strong>
+              <span>Pigeon Forge</span>
+            </div>
 
-          <span class="name">
-            Brody Griffin
-          </span>
+          </div>
 
-          <span class="support">
-            Support Brody
-          </span>
-        </a>
-
-
-        <a
-          class="player"
-          href="/fundraiser.html?player=matthew-perez"
-        >
-          <span class="number">
-            #19
-          </span>
-
-          <span class="name">
-            Matthew Perez
-          </span>
-
-          <span class="support">
-            Support Matthew
-          </span>
-        </a>
-
-
-        <a
-          class="player"
-          href="/fundraiser.html?player=henry-santana-jr"
-        >
-          <span class="number">
-            #23
-          </span>
-
-          <span class="name">
-            Henry Santana Jr
-          </span>
-
-          <span class="support">
-            Support Henry
-          </span>
-        </a>
-
-
-        <a
-          class="player"
-          href="/fundraiser.html?player=jaxon-weaver"
-        >
-          <span class="number">
-            #27
-          </span>
-
-          <span class="name">
-            Jaxon Weaver
-          </span>
-
-          <span class="support">
-            Support Jaxon
-          </span>
-        </a>
-
-
-        <a
-          class="player"
-          href="/fundraiser.html?player=evan-chowattukunnel"
-        >
-          <span class="number">
-            #30
-          </span>
-
-          <span class="name">
-            Evan Chowattukunnel
-          </span>
-
-          <span class="support">
-            Support Evan
-          </span>
-        </a>
-
-
-        <a
-          class="player"
-          href="/fundraiser.html?player=lucas-colon"
-        >
-          <span class="number">
-            #50
-          </span>
-
-          <span class="name">
-            Lucas Colon
-          </span>
-
-          <span class="support">
-            Support Lucas
-          </span>
-        </a>
-
-
-        <a
-          class="player"
-          href="/fundraiser.html?player=nico-pere"
-        >
-          <span class="number">
-            #52
-          </span>
-
-          <span class="name">
-            Nico Peré
-          </span>
-
-          <span class="support">
-            Support Nico
-          </span>
-        </a>
+        </div>
 
       </div>
 
     </section>
 
 
-    <footer class="footer">
 
-      <strong>
-        South Florida Legacy Baseball
-      </strong>
+    <!-- MISSION -->
 
-      <br>
+    <section class="mission">
 
-      Road to
-      <span class="pink">
-        Pigeon Forge
-      </span>
+      <div class="site-shell">
 
-      • Ripken Experience • Tennessee
+        <div class="mission-card">
 
-      <br>
+          <div class="mission-inner">
 
-      #DefineYourLegacy
+            <div class="mission-big">
 
-    </footer>
+              Train Hard.
+
+              <span>
+                Play Legacy.
+              </span>
+
+            </div>
+
+
+            <div class="mission-copy">
+
+              Every player has 60 numbered
+              baseballs available.
+
+              Baseball #1 is a $1 donation,
+              baseball #25 is a $25 donation,
+              baseball #60 is a $60 donation,
+              and you can select multiple
+              baseballs in the same checkout.
+
+              Every contribution helps get our
+              boys one step closer to Pigeon
+              Forge.
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- PLAYERS -->
+
+    <section
+      class="players-section"
+      id="players"
+    >
+
+      <div class="site-shell">
+
+        <div class="section-heading">
+
+          <div class="section-label">
+            Pick Your Player
+          </div>
+
+          <h2>
+            Support The Journey
+          </h2>
+
+          <p>
+            Choose a South Florida Legacy
+            player below to open their
+            individual fundraiser and see
+            which baseballs are still
+            available.
+          </p>
+
+        </div>
+
+
+        <div class="players-grid">
+
+
+          <a
+            class="player-card"
+            href="/fundraiser.html?player=chafie-fields"
+          >
+
+            <div class="player-number">
+              #2
+            </div>
+
+            <div class="player-name">
+              Chafie Fields
+            </div>
+
+            <div class="support-link">
+              View Fundraiser
+              <span>→</span>
+            </div>
+
+          </a>
+
+
+          <a
+            class="player-card"
+            href="/fundraiser.html?player=anthony-raia"
+          >
+
+            <div class="player-number">
+              #3
+            </div>
+
+            <div class="player-name">
+              Anthony Raia
+            </div>
+
+            <div class="support-link">
+              View Fundraiser
+              <span>→</span>
+            </div>
+
+          </a>
+
+
+          <a
+            class="player-card"
+            href="/fundraiser.html?player=kyrie-rivera"
+          >
+
+            <div class="player-number">
+              #5
+            </div>
+
+            <div class="player-name">
+              Kyrie Rivera
+            </div>
+
+            <div class="support-link">
+              View Fundraiser
+              <span>→</span>
+            </div>
+
+          </a>
+
+
+          <a
+            class="player-card"
+            href="/fundraiser.html?player=jack-lieberman"
+          >
+
+            <div class="player-number">
+              #7
+            </div>
+
+            <div class="player-name">
+              Jack Lieberman
+            </div>
+
+            <div class="support-link">
+              View Fundraiser
+              <span>→</span>
+            </div>
+
+          </a>
+
+
+          <a
+            class="player-card"
+            href="/fundraiser.html?player=aaron-reynoso"
+          >
+
+            <div class="player-number">
+              #12
+            </div>
+
+            <div class="player-name">
+              Aaron Reynoso
+            </div>
+
+            <div class="support-link">
+              View Fundraiser
+              <span>→</span>
+            </div>
+
+          </a>
+
+
+          <a
+            class="player-card"
+            href="/fundraiser.html?player=brody-griffin"
+          >
+
+            <div class="player-number">
+              #17
+            </div>
+
+            <div class="player-name">
+              Brody Griffin
+            </div>
+
+            <div class="support-link">
+              View Fundraiser
+              <span>→</span>
+            </div>
+
+          </a>
+
+
+          <a
+            class="player-card"
+            href="/fundraiser.html?player=matthew-perez"
+          >
+
+            <div class="player-number">
+              #19
+            </div>
+
+            <div class="player-name">
+              Matthew Perez
+            </div>
+
+            <div class="support-link">
+              View Fundraiser
+              <span>→</span>
+            </div>
+
+          </a>
+
+
+          <a
+            class="player-card"
+            href="/fundraiser.html?player=henry-santana-jr"
+          >
+
+            <div class="player-number">
+              #23
+            </div>
+
+            <div class="player-name">
+              Henry Santana Jr
+            </div>
+
+            <div class="support-link">
+              View Fundraiser
+              <span>→</span>
+            </div>
+
+          </a>
+
+
+          <a
+            class="player-card"
+            href="/fundraiser.html?player=jaxon-weaver"
+          >
+
+            <div class="player-number">
+              #27
+            </div>
+
+            <div class="player-name">
+              Jaxon Weaver
+            </div>
+
+            <div class="support-link">
+              View Fundraiser
+              <span>→</span>
+            </div>
+
+          </a>
+
+
+          <a
+            class="player-card"
+            href="/fundraiser.html?player=evan-chowattukunnel"
+          >
+
+            <div class="player-number">
+              #30
+            </div>
+
+            <div class="player-name">
+              Evan Chowattukunnel
+            </div>
+
+            <div class="support-link">
+              View Fundraiser
+              <span>→</span>
+            </div>
+
+          </a>
+
+
+          <a
+            class="player-card"
+            href="/fundraiser.html?player=lucas-colon"
+          >
+
+            <div class="player-number">
+              #50
+            </div>
+
+            <div class="player-name">
+              Lucas Colon
+            </div>
+
+            <div class="support-link">
+              View Fundraiser
+              <span>→</span>
+            </div>
+
+          </a>
+
+
+          <a
+            class="player-card"
+            href="/fundraiser.html?player=nico-pere"
+          >
+
+            <div class="player-number">
+              #52
+            </div>
+
+            <div class="player-name">
+              Nico Peré
+            </div>
+
+            <div class="support-link">
+              View Fundraiser
+              <span>→</span>
+            </div>
+
+          </a>
+
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- HOW IT WORKS -->
+
+    <section
+      class="how-section"
+      id="how-it-works"
+    >
+
+      <div class="site-shell">
+
+        <div class="section-heading">
+
+          <div class="section-label">
+            Road To Pigeon Forge
+          </div>
+
+          <h2>
+            How It Works
+          </h2>
+
+        </div>
+
+
+        <div class="how-grid">
+
+
+          <div class="how-card">
+
+            <div class="how-number">
+              1
+            </div>
+
+            <h3>
+              Choose A Player
+            </h3>
+
+            <p>
+              Select the South Florida Legacy
+              player you would like to support
+              and open their personal
+              fundraiser page.
+            </p>
+
+          </div>
+
+
+          <div class="how-card">
+
+            <div class="how-number">
+              2
+            </div>
+
+            <h3>
+              Pick Baseballs
+            </h3>
+
+            <p>
+              Choose any available baseballs
+              numbered 1 through 60.
+              The baseball number is the
+              donation amount.
+            </p>
+
+          </div>
+
+
+          <div class="how-card">
+
+            <div class="how-number">
+              3
+            </div>
+
+            <h3>
+              Send Legacy To Tennessee
+            </h3>
+
+            <p>
+              Complete your secure checkout
+              and help our players make the
+              journey to the Ripken Experience
+              in Pigeon Forge.
+            </p>
+
+          </div>
+
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- FINAL CTA -->
+
+    <section class="final-cta">
+
+      <div class="site-shell">
+
+        <div class="final-panel">
+
+          <div class="section-label">
+            Define Your Legacy
+          </div>
+
+          <h2>
+
+            Help Us Reach
+            <span>
+              Pigeon Forge
+            </span>
+
+          </h2>
+
+          <p>
+            Baseball creates memories that
+            last a lifetime. Thank you for
+            supporting our players, our
+            families and the South Florida
+            Legacy journey.
+          </p>
+
+          <a
+            class="primary-btn"
+            href="#players"
+          >
+            Choose A Player
+          </a>
+
+        </div>
+
+      </div>
+
+    </section>
+
 
   </main>
+
+
+
+  <footer>
+
+    <div class="site-shell">
+
+      <div class="footer-line"></div>
+
+      South Florida Legacy Baseball
+      &nbsp;•&nbsp;
+      Road To Pigeon Forge
+      &nbsp;•&nbsp;
+      2026
+
+    </div>
+
+  </footer>
+
 
 </body>
 </html>

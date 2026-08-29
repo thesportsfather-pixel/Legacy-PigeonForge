@@ -53,6 +53,9 @@ export async function onRequestGet({
     const TEAM_KEY =
       "legacy-pigeon-forge";
 
+    const GOAL_AMOUNT =
+      1830;
+
     const url =
       new URL(request.url);
 
@@ -73,9 +76,7 @@ export async function onRequestGet({
     }
 
     /*
-      STEP 1:
-      Find the Pigeon Forge team UUID
-      using its team_key.
+      Find the Pigeon Forge team.
     */
 
     const teams =
@@ -101,9 +102,7 @@ export async function onRequestGet({
       teams[0];
 
     /*
-      STEP 2:
-      Find the player using the team's
-      UUID and the player's slug.
+      Find player.
     */
 
     let players =
@@ -115,11 +114,6 @@ export async function onRequestGet({
           playerSlug
         )}&select=id,slug,player_key,name,player_name,player_number&limit=1`
       );
-
-    /*
-      Fallback for older rows that may
-      use player_key instead of slug.
-    */
 
     if (!players.length) {
       players =
@@ -147,14 +141,13 @@ export async function onRequestGet({
     const player =
       players[0];
 
-    /*
-      STEP 3:
-      Get sold baseballs.
+    const playerName =
+      player.player_name ||
+      player.name ||
+      "";
 
-      baseballs.team_id is TEXT in this
-      fundraiser architecture, so we use
-      the team key here rather than the
-      UUID.
+    /*
+      Get sold baseballs.
     */
 
     const soldBalls =
@@ -168,18 +161,125 @@ export async function onRequestGet({
       );
 
     /*
-      Return full sold-ball records so
-      fundraiser.html can show donor names
-      underneath sold baseballs.
+      Since each ball number equals its
+      donation amount, the sold-ball total
+      is simply the sum of the ball numbers.
     */
+
+    const baseballAmountRaised =
+      soldBalls.reduce(
+        (total, row) => {
+          const ballNumber =
+            Number(row.ball_number);
+
+          return (
+            total +
+            (
+              Number.isFinite(ballNumber)
+                ? ballNumber
+                : 0
+            )
+          );
+        },
+        0
+      );
+
+    /*
+      Get PAID player general donations.
+
+      Do NOT include baseball orders here,
+      because those amounts are already
+      calculated from the sold baseballs.
+    */
+
+    const generalOrders =
+      await supabaseGet(
+        env,
+        `orders?team_id=eq.${encodeURIComponent(
+          TEAM_KEY
+        )}&player_id=eq.${encodeURIComponent(
+          player.id
+        )}&donation_type=eq.general&status=eq.paid&select=amount,amount_cents,total_cents`
+      );
+
+    const generalDonationAmount =
+      generalOrders.reduce(
+        (total, order) => {
+          /*
+            Prefer amount_cents.
+
+            Fall back to total_cents,
+            then amount.
+          */
+
+          const amountCents =
+            Number(
+              order.amount_cents ??
+              order.total_cents ??
+              0
+            );
+
+          if (
+            Number.isFinite(amountCents) &&
+            amountCents > 0
+          ) {
+            return (
+              total +
+              amountCents / 100
+            );
+          }
+
+          const amount =
+            Number(order.amount || 0);
+
+          return (
+            total +
+            (
+              Number.isFinite(amount)
+                ? amount
+                : 0
+            )
+          );
+        },
+        0
+      );
+
+    /*
+      Total player progress.
+    */
+
+    const amountRaised =
+      Number(
+        (
+          baseballAmountRaised +
+          generalDonationAmount
+        ).toFixed(2)
+      );
+
+    const progressPercent =
+      Math.min(
+        100,
+        Math.max(
+          0,
+          Number(
+            (
+              amountRaised /
+              GOAL_AMOUNT *
+              100
+            ).toFixed(1)
+          )
+        )
+      );
 
     return json({
       success: true,
 
       team: {
         id: team.id,
-        team_key: team.team_key,
-        team_name: team.team_name,
+        team_key:
+          team.team_key,
+        team_name:
+          team.team_name,
       },
 
       player: {
@@ -188,14 +288,10 @@ export async function onRequestGet({
           player.slug ||
           player.player_key ||
           playerSlug,
-
         name:
-          player.player_name ||
-          player.name ||
-          "",
-
+          playerName,
         number:
-          player.player_number ?? null,
+          player.player_number,
       },
 
       soldBalls,
@@ -203,11 +299,24 @@ export async function onRequestGet({
       soldCount:
         soldBalls.length,
 
-      totalBalls: 60,
+      totalBalls:
+        60,
+
+      baseballAmountRaised,
+
+      generalDonationAmount,
+
+      amountRaised,
+
+      goalAmount:
+        GOAL_AMOUNT,
+
+      progressPercent,
     });
+
   } catch (error) {
     console.error(
-      "fundraiser.js error:",
+      "fundraiser error:",
       error
     );
 

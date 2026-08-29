@@ -329,6 +329,92 @@
       color: #ffe1e5;
     }
 
+    .progress-section {
+      padding: 4px 0 14px;
+    }
+
+    .progress-card {
+      padding: 20px 22px;
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 18px;
+      background: rgba(255,255,255,.025);
+    }
+
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .progress-title {
+      color: white;
+      font-size: 13px;
+      font-weight: 950;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .progress-money {
+      margin-top: 4px;
+      font-size: 24px;
+      font-weight: 950;
+      color: white;
+    }
+
+    .progress-money span {
+      color: #aeb3bd;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .progress-percent {
+      color: var(--blue-light);
+      font-size: 15px;
+      font-weight: 950;
+    }
+
+    .progress-track {
+      position: relative;
+      width: 100%;
+      height: 16px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      box-shadow:
+        inset 0 2px 4px rgba(0,0,0,.35);
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background:
+        linear-gradient(
+          90deg,
+          var(--blue) 0%,
+          #35d4ff 45%,
+          var(--pink) 100%
+        );
+      box-shadow:
+        0 0 14px rgba(0,174,239,.45),
+        0 0 18px rgba(236,0,140,.25);
+      transition: width .6s ease;
+    }
+
+    .progress-details {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 9px;
+      color: #888e98;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+    }
+
     .baseball-section {
       padding: 24px 0 36px;
     }
@@ -731,6 +817,22 @@
         font-size: 6.5px;
       }
 
+      .progress-card {
+        padding: 17px 15px;
+      }
+
+      .progress-money {
+        font-size: 21px;
+      }
+
+      .progress-top {
+        align-items: center;
+      }
+
+      .progress-details {
+        font-size: 8px;
+      }
+
       .baseball-section {
         padding-top: 18px;
       }
@@ -899,6 +1001,79 @@
           </div>
 
         </div>
+      </div>
+    </section>
+
+    <section class="progress-section">
+      <div class="shell">
+
+        <div class="progress-card">
+
+          <div class="progress-top">
+
+            <div>
+
+              <div class="progress-title">
+                Fundraising Progress
+              </div>
+
+              <div class="progress-money">
+                <strong id="amountRaised">
+                  $0
+                </strong>
+
+                <span>
+                  Raised of
+                  <strong id="goalAmount">
+                    $1,830
+                  </strong>
+                  Goal
+                </span>
+              </div>
+
+            </div>
+
+            <div
+              class="progress-percent"
+              id="progressPercent"
+            >
+              0%
+            </div>
+
+          </div>
+
+          <div
+            class="progress-track"
+            id="progressTrack"
+            role="progressbar"
+            aria-label="Fundraising progress"
+            aria-valuemin="0"
+            aria-valuemax="1830"
+            aria-valuenow="0"
+          >
+            <div
+              class="progress-fill"
+              id="progressFill"
+            ></div>
+          </div>
+
+          <div class="progress-details">
+
+            <span>
+              Support
+              <span id="progressPlayerName">
+                Legacy
+              </span>
+            </span>
+
+            <span id="amountRemaining">
+              $1,830 To Go
+            </span>
+
+          </div>
+
+        </div>
+
       </div>
     </section>
 
@@ -1189,6 +1364,41 @@
         "soldCount"
       );
 
+    const amountRaised =
+      document.getElementById(
+        "amountRaised"
+      );
+
+    const goalAmount =
+      document.getElementById(
+        "goalAmount"
+      );
+
+    const progressPercent =
+      document.getElementById(
+        "progressPercent"
+      );
+
+    const progressFill =
+      document.getElementById(
+        "progressFill"
+      );
+
+    const progressTrack =
+      document.getElementById(
+        "progressTrack"
+      );
+
+    const progressPlayerName =
+      document.getElementById(
+        "progressPlayerName"
+      );
+
+    const amountRemaining =
+      document.getElementById(
+        "amountRemaining"
+      );
+
     const selectedCount =
       document.getElementById(
         "selectedCount"
@@ -1272,9 +1482,7 @@
     }
 
     function getDonorName() {
-      if (
-        anonymous.checked
-      ) {
+      if (anonymous.checked) {
         return "Anonymous";
       }
 
@@ -1410,7 +1618,6 @@
         baseballGrid.appendChild(
           wrap
         );
-
       }
     }
 
@@ -1451,6 +1658,89 @@
         balls.length === 0;
     }
 
+    function updateProgress(data) {
+      const raised =
+        Number(
+          data.amountRaised || 0
+        );
+
+      const goal =
+        Number(
+          data.goalAmount || 1830
+        );
+
+      const percent =
+        Math.min(
+          100,
+          Math.max(
+            0,
+            Number(
+              data.progressPercent || 0
+            )
+          )
+        );
+
+      const remaining =
+        Math.max(
+          0,
+          goal - raised
+        );
+
+      const moneyFormatter =
+        new Intl.NumberFormat(
+          "en-US",
+          {
+            style: "currency",
+            currency: "USD",
+            maximumFractionDigits: 0
+          }
+        );
+
+      amountRaised.textContent =
+        moneyFormatter.format(
+          raised
+        );
+
+      goalAmount.textContent =
+        moneyFormatter.format(
+          goal
+        );
+
+      if (
+        percent > 0 &&
+        percent < 1
+      ) {
+        progressPercent.textContent =
+          `${percent.toFixed(1)}%`;
+      } else {
+        progressPercent.textContent =
+          `${Math.round(percent)}%`;
+      }
+
+      progressFill.style.width =
+        `${percent}%`;
+
+      progressTrack.setAttribute(
+        "aria-valuemax",
+        String(goal)
+      );
+
+      progressTrack.setAttribute(
+        "aria-valuenow",
+        String(raised)
+      );
+
+      progressPlayerName.textContent =
+        player.name;
+
+      amountRemaining.textContent =
+        remaining > 0
+          ? `${moneyFormatter.format(
+              remaining
+            )} To Go`
+          : "Goal Reached!";
+    }
+
     async function loadFundraiser() {
       if (!player) {
         showNotice(
@@ -1468,6 +1758,9 @@
         `#${player.number}`;
 
       playerCopyName.textContent =
+        player.name;
+
+      progressPlayerName.textContent =
         player.name;
 
       renderBaseballs();
@@ -1526,6 +1819,8 @@
           String(
             soldBallMap.size
           );
+
+        updateProgress(data);
 
         renderBaseballs();
 
@@ -1676,7 +1971,6 @@
           checkoutButton.textContent =
             "Continue To Secure Checkout";
         }
-
       }
     );
 
@@ -1778,7 +2072,6 @@
           generalButton.textContent =
             "Make General Donation";
         }
-
       }
     );
 

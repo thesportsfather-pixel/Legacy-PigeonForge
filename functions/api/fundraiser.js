@@ -15,7 +15,8 @@ async function supabaseGet(env, path) {
       method: "GET",
       headers: {
         apikey: env.SUPABASE_SERVICE_ROLE_KEY,
-        authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+        authorization:
+          `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
         accept: "application/json",
       },
     }
@@ -70,30 +71,86 @@ export async function onRequestGet({
     }
 
     /*
-      FIND PLAYER
-
-      Expected players columns:
-      id
-      team_id
-      name
-      player_number
-      slug
+      --------------------------------
+      1. FIND TEAM BY TEAM_KEY
+      --------------------------------
     */
 
-    const players = await supabaseGet(
-      env,
-      [
-        "players",
-        "?select=id,name,player_number,slug",
-        `&team_id=eq.${encodeURIComponent(
-          env.TEAM_KEY
-        )}`,
-        `&slug=eq.${encodeURIComponent(
-          playerSlug
-        )}`,
-        "&limit=1",
-      ].join("")
-    );
+    const teams =
+      await supabaseGet(
+        env,
+        [
+          "teams",
+          "?select=id,team_key,team_name",
+          `&team_key=eq.${encodeURIComponent(
+            env.TEAM_KEY
+          )}`,
+          "&limit=1",
+        ].join("")
+      );
+
+    if (!teams.length) {
+      return json(
+        {
+          success: false,
+          error: "Team not found.",
+        },
+        404
+      );
+    }
+
+    const team = teams[0];
+
+    /*
+      --------------------------------
+      2. FIND PLAYER USING TEAM UUID
+      --------------------------------
+
+      players.team_id is UUID
+
+      We support both:
+      slug
+      player_key
+    */
+
+    let players =
+      await supabaseGet(
+        env,
+        [
+          "players",
+          "?select=id,player_key,player_name,player_number,slug,name",
+          `&team_id=eq.${encodeURIComponent(
+            team.id
+          )}`,
+          `&slug=eq.${encodeURIComponent(
+            playerSlug
+          )}`,
+          "&limit=1",
+        ].join("")
+      );
+
+    /*
+      Fallback for older player records
+      that may use player_key instead.
+    */
+
+    if (!players.length) {
+      players =
+        await supabaseGet(
+          env,
+          [
+            "players",
+            "?select=id,player_key,player_name,player_number,slug,name",
+            `&team_id=eq.${encodeURIComponent(
+              team.id
+            )}`,
+            `&player_key=eq.${encodeURIComponent(
+              playerSlug
+            )}`,
+            "&limit=1",
+          ].join("")
+        );
+    }
 
     if (!players.length) {
       return json(
@@ -108,63 +165,79 @@ export async function onRequestGet({
     const player = players[0];
 
     /*
-      FIND SOLD BASEBALLS
+      --------------------------------
+      3. LOAD SOLD BASEBALLS
+      --------------------------------
 
-      Expected baseballs columns:
-      id
-      team_id
-      player_id
-      ball_number
-      status
-
-      Only baseballs with status = sold
-      are disabled on the fundraiser page.
+      baseballs.team_id is TEXT,
+      so here we use TEAM_KEY.
     */
 
-    const baseballs = await supabaseGet(
-      env,
-      [
-        "baseballs",
-        "?select=ball_number,status",
-        `&team_id=eq.${encodeURIComponent(
-          env.TEAM_KEY
-        )}`,
-        `&player_id=eq.${encodeURIComponent(
-          player.id
-        )}`,
-        "&status=eq.sold",
-        "&order=ball_number.asc",
-      ].join("")
-    );
-
-    const soldBalls = baseballs
-      .map(
-        (row) =>
-          Number(row.ball_number)
-      )
-      .filter(
-        (number) =>
-          Number.isInteger(number) &&
-          number >= 1 &&
-          number <= 60
+    const baseballs =
+      await supabaseGet(
+        env,
+        [
+          "baseballs",
+          "?select=ball_number,status",
+          `&team_id=eq.${encodeURIComponent(
+            env.TEAM_KEY
+          )}`,
+          `&player_id=eq.${encodeURIComponent(
+            player.id
+          )}`,
+          "&status=eq.sold",
+          "&order=ball_number.asc",
+        ].join("")
       );
+
+    const soldBalls =
+      baseballs
+        .map(
+          row =>
+            Number(row.ball_number)
+        )
+        .filter(
+          number =>
+            Number.isInteger(number) &&
+            number >= 1 &&
+            number <= 60
+        );
+
+    const resolvedName =
+      player.player_name ||
+      player.name ||
+      "";
+
+    const resolvedSlug =
+      player.slug ||
+      player.player_key ||
+      playerSlug;
 
     return json({
       success: true,
 
+      team: {
+        id: team.id,
+        key: team.team_key,
+        name: team.team_name,
+      },
+
       player: {
         id: player.id,
-        slug: player.slug,
-        name: player.name,
+        slug: resolvedSlug,
+        name: resolvedName,
         number: player.player_number,
       },
 
       soldBalls,
 
-      soldCount: soldBalls.length,
+      soldCount:
+        soldBalls.length,
 
-      totalBalls: 60,
+      totalBalls:
+        60,
     });
+
   } catch (error) {
     console.error(
       "FUNDRAISER API ERROR:",
@@ -175,6 +248,7 @@ export async function onRequestGet({
       {
         success: false,
         error:
+          error?.message ||
           "Unable to load fundraiser.",
       },
       500

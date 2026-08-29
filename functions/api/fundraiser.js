@@ -12,11 +12,9 @@ async function supabaseGet(env, path) {
   const response = await fetch(
     `${env.SUPABASE_URL}/rest/v1/${path}`,
     {
-      method: "GET",
       headers: {
         apikey: env.SUPABASE_SERVICE_ROLE_KEY,
-        authorization:
-          `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+        authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
         accept: "application/json",
       },
     }
@@ -40,8 +38,7 @@ export async function onRequestGet({
   try {
     if (
       !env.SUPABASE_URL ||
-      !env.SUPABASE_SERVICE_ROLE_KEY ||
-      !env.TEAM_KEY
+      !env.SUPABASE_SERVICE_ROLE_KEY
     ) {
       return json(
         {
@@ -53,10 +50,14 @@ export async function onRequestGet({
       );
     }
 
-    const url = new URL(request.url);
+    const TEAM_KEY =
+      "legacy-pigeon-forge";
+
+    const url =
+      new URL(request.url);
 
     const playerSlug =
-      (
+      String(
         url.searchParams.get("player") || ""
       ).trim();
 
@@ -64,91 +65,71 @@ export async function onRequestGet({
       return json(
         {
           success: false,
-          error: "Missing player.",
+          error:
+            "Player is required.",
         },
         400
       );
     }
 
     /*
-      --------------------------------
-      1. FIND TEAM BY TEAM_KEY
-      --------------------------------
+      STEP 1:
+      Find the Pigeon Forge team UUID
+      using its team_key.
     */
 
     const teams =
       await supabaseGet(
         env,
-        [
-          "teams",
-          "?select=id,team_key,team_name",
-          `&team_key=eq.${encodeURIComponent(
-            env.TEAM_KEY
-          )}`,
-          "&limit=1",
-        ].join("")
+        `teams?team_key=eq.${encodeURIComponent(
+          TEAM_KEY
+        )}&select=id,team_key,team_name&limit=1`
       );
 
     if (!teams.length) {
       return json(
         {
           success: false,
-          error: "Team not found.",
+          error:
+            "Pigeon Forge team not found.",
         },
         404
       );
     }
 
-    const team = teams[0];
+    const team =
+      teams[0];
 
     /*
-      --------------------------------
-      2. FIND PLAYER USING TEAM UUID
-      --------------------------------
-
-      players.team_id is UUID
-
-      We support both:
-      slug
-      player_key
+      STEP 2:
+      Find the player using the team's
+      UUID and the player's slug.
     */
 
     let players =
       await supabaseGet(
         env,
-        [
-          "players",
-          "?select=id,player_key,player_name,player_number,slug,name",
-          `&team_id=eq.${encodeURIComponent(
-            team.id
-          )}`,
-          `&slug=eq.${encodeURIComponent(
-            playerSlug
-          )}`,
-          "&limit=1",
-        ].join("")
+        `players?team_id=eq.${encodeURIComponent(
+          team.id
+        )}&slug=eq.${encodeURIComponent(
+          playerSlug
+        )}&select=id,slug,player_key,name,player_name,player_number&limit=1`
       );
 
     /*
-      Fallback for older player records
-      that may use player_key instead.
+      Fallback for older rows that may
+      use player_key instead of slug.
     */
 
     if (!players.length) {
       players =
         await supabaseGet(
           env,
-          [
-            "players",
-            "?select=id,player_key,player_name,player_number,slug,name",
-            `&team_id=eq.${encodeURIComponent(
-              team.id
-            )}`,
-            `&player_key=eq.${encodeURIComponent(
-              playerSlug
-            )}`,
-            "&limit=1",
-          ].join("")
+          `players?team_id=eq.${encodeURIComponent(
+            team.id
+          )}&player_key=eq.${encodeURIComponent(
+            playerSlug
+          )}&select=id,slug,player_key,name,player_name,player_number&limit=1`
         );
     }
 
@@ -156,77 +137,65 @@ export async function onRequestGet({
       return json(
         {
           success: false,
-          error: "Player not found.",
+          error:
+            "Player not found.",
         },
         404
       );
     }
 
-    const player = players[0];
+    const player =
+      players[0];
 
     /*
-      --------------------------------
-      3. LOAD SOLD BASEBALLS
-      --------------------------------
+      STEP 3:
+      Get sold baseballs.
 
-      baseballs.team_id is TEXT,
-      so here we use TEAM_KEY.
+      baseballs.team_id is TEXT in this
+      fundraiser architecture, so we use
+      the team key here rather than the
+      UUID.
     */
 
-    const baseballs =
+    const soldBalls =
       await supabaseGet(
         env,
-        [
-          "baseballs",
-          "?select=ball_number,status",
-          `&team_id=eq.${encodeURIComponent(
-            env.TEAM_KEY
-          )}`,
-          `&player_id=eq.${encodeURIComponent(
-            player.id
-          )}`,
-          "&status=eq.sold",
-          "&order=ball_number.asc",
-        ].join("")
+        `baseballs?team_id=eq.${encodeURIComponent(
+          TEAM_KEY
+        )}&player_id=eq.${encodeURIComponent(
+          player.id
+        )}&status=eq.sold&select=ball_number,status,donor_name,donor_email,sold_at,stripe_session_id&order=ball_number.asc`
       );
 
-    const soldBalls =
-      baseballs
-        .map(
-          row =>
-            Number(row.ball_number)
-        )
-        .filter(
-          number =>
-            Number.isInteger(number) &&
-            number >= 1 &&
-            number <= 60
-        );
-
-    const resolvedName =
-      player.player_name ||
-      player.name ||
-      "";
-
-    const resolvedSlug =
-      player.slug ||
-      player.player_key ||
-      playerSlug;
+    /*
+      Return full sold-ball records so
+      fundraiser.html can show donor names
+      underneath sold baseballs.
+    */
 
     return json({
       success: true,
 
       team: {
         id: team.id,
-        key: team.team_key,
-        name: team.team_name,
+        team_key: team.team_key,
+        team_name: team.team_name,
       },
 
       player: {
         id: player.id,
-        slug: resolvedSlug,
-        name: resolvedName,
-        number: player.player_number,
+        slug:
+          player.slug ||
+          player.player_key ||
+          playerSlug,
+
+        name:
+          player.player_name ||
+          player.name ||
+          "",
+
+        number:
+          player.player_number ?? null,
       },
 
       soldBalls,
@@ -234,13 +203,11 @@ export async function onRequestGet({
       soldCount:
         soldBalls.length,
 
-      totalBalls:
-        60,
+      totalBalls: 60,
     });
-
   } catch (error) {
     console.error(
-      "FUNDRAISER API ERROR:",
+      "fundraiser.js error:",
       error
     );
 

@@ -1325,6 +1325,11 @@
       "nico-pere": {
         name: "Nico Peré",
         number: 52
+      },
+
+      "riley-gonzalez": {
+        name: "Riley Gonzalez",
+        number: 0
       }
     };
 
@@ -1755,7 +1760,9 @@
         player.name;
 
       playerNumber.textContent =
-        `#${player.number}`;
+        Number(player.number) > 0
+          ? `#${player.number}`
+          : "";
 
       playerCopyName.textContent =
         player.name;

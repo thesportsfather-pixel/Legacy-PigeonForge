@@ -2424,33 +2424,77 @@
       );
 
 
-    if (
-      paymentStatus ===
-      "success"
-    ) {
+    async function finishPageLoad() {
 
-      showNotice(
-        "Thank you! Your donation was completed successfully.",
+      if (
+        paymentStatus ===
         "success"
-      );
+      ) {
 
+        const sessionId =
+          params.get(
+            "session_id"
+          );
+
+        if (sessionId) {
+          try {
+            const verifyResponse =
+              await fetch(
+                `/api/verify-payment?session_id=${encodeURIComponent(sessionId)}`
+              );
+
+            const verifyText =
+              await verifyResponse.text();
+
+            let verifyData = {};
+            try {
+              verifyData = verifyText
+                ? JSON.parse(verifyText)
+                : {};
+            } catch {}
+
+            if (!verifyResponse.ok || verifyData.success === false) {
+              throw new Error(
+                verifyData.error ||
+                "Payment verification is still processing."
+              );
+            }
+
+            showNotice(
+              "Thank you! Your donation was completed and your baseball selection has been updated.",
+              "success"
+            );
+
+          } catch (error) {
+            console.error(error);
+
+            showNotice(
+              "Thank you! Your payment was completed. Your baseball selection may take a moment to update.",
+              "success"
+            );
+          }
+        } else {
+          showNotice(
+            "Thank you! Your donation was completed successfully.",
+            "success"
+          );
+        }
+      }
+
+      if (
+        paymentStatus ===
+        "cancelled"
+      ) {
+        showNotice(
+          "Checkout was cancelled. No payment was made.",
+          "error"
+        );
+      }
+
+      await loadFundraiser();
     }
 
-
-    if (
-      paymentStatus ===
-      "cancelled"
-    ) {
-
-      showNotice(
-        "Checkout was cancelled. No payment was made.",
-        "error"
-      );
-
-    }
-
-
-    loadFundraiser();
+    finishPageLoad();
 
   </script>
 

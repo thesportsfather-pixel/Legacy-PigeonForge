@@ -173,6 +173,31 @@ export async function onRequestPost({
     const TEAM_KEY =
       "legacy-pigeon-forge";
 
+    const teamResponse = await fetch(
+      `${env.SUPABASE_URL}/rest/v1/teams?team_key=eq.${encodeURIComponent(TEAM_KEY)}&select=id&limit=1`,
+      {
+        headers: {
+          apikey: env.SUPABASE_SERVICE_ROLE_KEY,
+          authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+          accept: "application/json",
+        },
+      }
+    );
+
+    const teamText = await teamResponse.text();
+
+    if (!teamResponse.ok) {
+      throw new Error(`Unable to resolve Legacy team: ${teamText}`);
+    }
+
+    const teamRows = teamText ? JSON.parse(teamText) : [];
+
+    if (!teamRows.length) {
+      throw new Error("Legacy Pigeon Forge team not found.");
+    }
+
+    const TEAM_ID = teamRows[0].id;
+
     const rawBody =
       await request.text();
 
@@ -355,9 +380,7 @@ export async function onRequestPost({
         const updated =
           await supabasePatch(
             env,
-            `baseballs?team_id=eq.${encodeURIComponent(
-              TEAM_KEY
-            )}&player_id=eq.${encodeURIComponent(
+            `baseballs?player_id=eq.${encodeURIComponent(
               playerId
             )}&ball_number=eq.${ballNumber}&status=neq.sold`,
             {
@@ -401,7 +424,7 @@ export async function onRequestPost({
           paid_at:
             new Date().toISOString(),
           team_id:
-            TEAM_KEY,
+            TEAM_ID,
           player_slug:
             playerSlug || null,
           player_name:
@@ -466,7 +489,7 @@ export async function onRequestPost({
           paid_at:
             new Date().toISOString(),
           team_id:
-            TEAM_KEY,
+            TEAM_ID,
           player_slug:
             playerSlug || null,
           player_name:

@@ -199,9 +199,7 @@ export async function onRequestPost({
     const unavailable =
       await supabaseGet(
         env,
-        `baseballs?team_id=eq.${encodeURIComponent(
-          TEAM_KEY
-        )}&player_id=eq.${encodeURIComponent(
+        `baseballs?player_id=eq.${encodeURIComponent(
           player.id
         )}&ball_number=in.(${selectedNumbers})&status=eq.sold&select=ball_number`
       );
@@ -255,6 +253,11 @@ export async function onRequestPost({
     stripeBody.set(
       "mode",
       "payment"
+    );
+
+    stripeBody.set(
+      "payment_method_types[0]",
+      "card"
     );
 
     stripeBody.set(

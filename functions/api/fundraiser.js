@@ -153,9 +153,7 @@ export async function onRequestGet({
     const soldBalls =
       await supabaseGet(
         env,
-        `baseballs?team_id=eq.${encodeURIComponent(
-          TEAM_KEY
-        )}&player_id=eq.${encodeURIComponent(
+        `baseballs?player_id=eq.${encodeURIComponent(
           player.id
         )}&status=eq.sold&select=ball_number,status,donor_name,donor_email,sold_at,stripe_session_id&order=ball_number.asc`
       );
@@ -195,9 +193,7 @@ export async function onRequestGet({
     const generalOrders =
       await supabaseGet(
         env,
-        `orders?team_id=eq.${encodeURIComponent(
-          TEAM_KEY
-        )}&player_id=eq.${encodeURIComponent(
+        `orders?player_id=eq.${encodeURIComponent(
           player.id
         )}&donation_type=eq.general&status=eq.paid&select=amount,amount_cents,total_cents`
       );
